@@ -43,6 +43,12 @@ public class LiteraryWorkController {
     public List<LiteraryWorkPost> getAllProseAndPoetry() {
         return literaryWorkService.getAllProseAndPoetry();
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteLiteraryWork(@PathVariable Long id) {
+        literaryWorkService.deleteLiteraryWork(id);
+    }
+
 }
 
 

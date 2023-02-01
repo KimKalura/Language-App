@@ -29,4 +29,9 @@ public class FavoriteLiteraryWorkController {
     public List<FavoriteLiteraryWorkList> getAllFavoriteLiteraryWorkByUser(@PathVariable Long userId) {
         return favoriteLiteraryWorkService.getAllFavoriteLiteraryWorkByUser(userId);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteSubreddit(@PathVariable Long id){
+        favoriteLiteraryWorkService.deleteFromFavoriteList(id);
+    }
 }

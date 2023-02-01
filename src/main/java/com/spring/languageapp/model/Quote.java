@@ -26,6 +26,9 @@ public class Quote {
     @Column
     private Integer numberOfDislikes;
 
+    @Column
+    private Boolean isApproved;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -39,11 +42,12 @@ public class Quote {
 
     public Quote(){}
 
-    public Quote(Long id, String text, Integer numberOfLikes, Integer numberOfDislikes, User user, List<Comment> commentList) {
+    public Quote(Long id, String text, Integer numberOfLikes, Integer numberOfDislikes, Boolean isApproved, User user, List<Comment> commentList) {
         this.id = id;
         this.text = text;
         this.numberOfLikes = numberOfLikes;
         this.numberOfDislikes = numberOfDislikes;
+        this.isApproved = isApproved;
         this.user = user;
         this.commentList = commentList;
     }
@@ -96,4 +100,11 @@ public class Quote {
         this.commentList = commentList;
     }
 
+    public Boolean getApproved() {
+        return isApproved;
+    }
+
+    public void setApproved(Boolean approved) {
+        isApproved = approved;
+    }
 }

@@ -3,6 +3,7 @@ package com.spring.languageapp.service;
 import com.spring.languageapp.model.Comment;
 import com.spring.languageapp.model.LiteraryWorkPost;
 import com.spring.languageapp.model.Quote;
+import com.spring.languageapp.repository.LiteraryWorkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,15 +16,19 @@ import javax.mail.internet.MimeMessage;
 public class MailService {
 
     private JavaMailSender emailSender;
+    private UserService userService;
+    private LiteraryWorkRepository literaryWorkRepository;
 
 
     @Autowired
-    public MailService(JavaMailSender emailSender) {
+    public MailService(JavaMailSender emailSender, UserService userService, LiteraryWorkRepository literaryWorkRepository) {
         this.emailSender = emailSender;
+        this.userService = userService;
+        this.literaryWorkRepository = literaryWorkRepository;
     }
 
     // pt COMENTARIU
-    public void sendCommentMessage(String recipientMail, Comment comment) throws MessagingException {
+    public void sendCommentMessage(String recipientMail, String comment, Long literaryWorkPostId) throws MessagingException {
 
         MimeMessage message = emailSender.createMimeMessage();
 
@@ -32,8 +37,8 @@ public class MailService {
         helper.setFrom("raluca.deftu@yahoo.com");
         helper.setTo(recipientMail);
 
-        helper.setSubject("New comment to " + comment.getLiteraryWorkPost().getTitle());
-        helper.setText(comment.getUser().getUsername() + " add a comment to your post: " + comment.getComment());
+        helper.setSubject("You have a comment from " + userService.findLoggedInUser().getUsername());
+        helper.setText("Your post: " + literaryWorkRepository.findById(literaryWorkPostId) + " has a new comment: " + comment);
         emailSender.send(message);
     }
 
@@ -53,7 +58,7 @@ public class MailService {
     }
 
     //aprobare pt QUOTE
-    public void sendApproveForQuote(String recipientMail, Quote quote, LiteraryWorkPost literaryWorkPost) throws MessagingException {
+    public void sendApproveForQuote(String recipientMail, Quote quote) throws MessagingException {
 
         MimeMessage message = emailSender.createMimeMessage();
 
@@ -62,9 +67,8 @@ public class MailService {
         helper.setFrom("raluca.deftu@yahoo.com");
         helper.setTo(recipientMail);
 
-        helper.setSubject(literaryWorkPost.getUser().getUsername() + " saw your creation");
-        helper.setText(literaryWorkPost.getUser().getUsername() + " wants to add a quote from " + literaryWorkPost.getTitle());
-        //citat
+        //helper.setSubject(quote.getUser().getUsername() + " saw your creation.");
+        helper.setText(quote.getUser().getUsername() + " wants to add a quote." + " < " + quote.getText() + " > " +  " You can approve or unapprove the adding.");
         emailSender.send(message);
     }
 
@@ -78,8 +82,8 @@ public class MailService {
         helper.setFrom("raluca.deftu@yahoo.com");
         helper.setTo(recipientMail);
 
-        helper.setSubject(literaryWorkPost.getTitle() + " was added in Favorite List");
-        helper.setText(literaryWorkPost.getUser().getUsername() + " added " + literaryWorkPost.getTitle() + "in Favorite List.");
+        helper.setSubject("< " + literaryWorkPost.getTitle() + " >" + " was added in Favorite List");
+        helper.setText(literaryWorkPost.getUser().getUsername() + " added your creation " + "< " + literaryWorkPost.getTitle() + " >" + " in Favorite List.");
         emailSender.send(message);
     }
 }

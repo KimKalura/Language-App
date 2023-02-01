@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/quote")
@@ -18,9 +19,19 @@ public class QuoteController {
         this.quoteService = quoteService;
     }
 
-    @PostMapping("/add/{id}")
-    public Quote addQuote(@PathVariable Long id, @RequestBody QuoteRequestDTO quoteRequestDTO) throws MessagingException {
-        return quoteService.addQuote(id, quoteRequestDTO);
+
+    @PostMapping("/add/{userId}")
+    public Quote addQuote(@PathVariable Long userId, @RequestBody QuoteRequestDTO quoteRequestDTO) throws MessagingException {
+        return quoteService.addQuote(userId, quoteRequestDTO);
     }
 
+    @GetMapping("/{quoteId}")
+    public Quote approvedQuote(@PathVariable Long quoteId) throws MessagingException {
+         return quoteService.approveQuote(quoteId);
+    }
+
+     @GetMapping("/getAllApprovedQuotes")
+    public List<Boolean> getAllApprovedQuotes(){
+        return quoteService.getAllApprovedQuotes();
+    }
 }

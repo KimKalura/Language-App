@@ -45,14 +45,14 @@ public class PhotoPost {
     private List<Comment> commentList;
 
     @OneToMany(mappedBy = "photoPost", cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "photoPost-favoritePhotoListList")
-    private List<FavoritePhotoList> favoritePhotoListList;
+    @JsonManagedReference(value = "photoPost-favoritePhotoList")
+    private List<FavoritePhotoList> favoritePhotoList;
 
 
     public PhotoPost() {
     }
 
-    public PhotoPost(Long id, String name, String type, String description, byte[] photoData, Integer numberOfLikes, Integer numberOfDislikes, User user, List<Comment> commentList, List<FavoritePhotoList> favoritePhotoListList) {
+    public PhotoPost(Long id, String name, String type, String description, byte[] photoData, Integer numberOfLikes, Integer numberOfDislikes, User user, List<Comment> commentList, List<FavoritePhotoList> favoritePhotoList) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -62,7 +62,7 @@ public class PhotoPost {
         this.numberOfDislikes = numberOfDislikes;
         this.user = user;
         this.commentList = commentList;
-        this.favoritePhotoListList = favoritePhotoListList;
+        this.favoritePhotoList = favoritePhotoList;
     }
 
     public Long getId() {
@@ -137,11 +137,11 @@ public class PhotoPost {
         this.commentList = commentList;
     }
 
-    public List<FavoritePhotoList> getFavoritePhotoListList() {
-        return favoritePhotoListList;
+    public List<FavoritePhotoList> getFavoritePhotoList() {
+        return favoritePhotoList;
     }
 
-    public void setFavoritePhotoListList(List<FavoritePhotoList> favoritePhotoListList) {
-        this.favoritePhotoListList = favoritePhotoListList;
+    public void setFavoritePhotoList(List<FavoritePhotoList> favoritePhotoList) {
+        this.favoritePhotoList = favoritePhotoList;
     }
 }

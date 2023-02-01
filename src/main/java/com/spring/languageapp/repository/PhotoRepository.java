@@ -12,8 +12,8 @@ import java.util.List;
 @Repository
 public interface PhotoRepository extends JpaRepository<Role,Long> {
 
-  //List<PhotoPost> findByUser(User user);
-  //Optional<PhotoPost> findByName(String fileName);
-  //PhotoPost findByName(String name);
+//  List<PhotoPost> findByUser(User user);
+//  Optional<PhotoPost> findByName(String fileName);
+//  PhotoPost findByName(String name);
 
 }

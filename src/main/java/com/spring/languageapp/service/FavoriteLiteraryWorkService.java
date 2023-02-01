@@ -36,8 +36,8 @@ public class FavoriteLiteraryWorkService {
     }
 
     //adaug la favorite o opera sau o poza
-         //autorul poeziei, de exemplu, va primi o notificare pe mail ca poezia lui a fost adaugata la favorite de catre cele care a adaugat-o
-    public FavoriteLiteraryWorkList addLiteraryWorkToFavoriteList(FavoriteLiteraryWorkRequestDTO favoriteLiteraryWorkRequestDTO) throws MessagingException {
+    //autorul poeziei, de exemplu, va primi o notificare pe mail ca poezia lui a fost adaugata la favorite de catre cele care a adaugat-o
+    public FavoriteLiteraryWorkList addLiteraryWorkToFavoriteList(FavoriteLiteraryWorkRequestDTO favoriteLiteraryWorkRequestDTO) throws MessagingException {//quoterep
         LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(favoriteLiteraryWorkRequestDTO.getLiteraryWorkPostId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User foundUser = userRepository.findUserByUsername(userDetails.getUsername()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
@@ -52,17 +52,25 @@ public class FavoriteLiteraryWorkService {
         favoriteLiteraryWork.setUser(foundUser);
         favoriteLiteraryWork.setSavedDate(foundLiteraryWork.getCreatedDate());//se salveaza cu data in care a fost creat LiteraryWork
 
-       // mailService.sendMessegeForFavoriteAddedLiteraryWork(foundUser.getEmail(), foundLiteraryWork);
+        mailService.sendMessegeForFavoriteAddedLiteraryWork(foundUser.getEmail(), foundLiteraryWork);
 
         return favoriteLiteraryWorkListRepository.save(favoriteLiteraryWork);
+
+        //{
+        //    "id": 91,
+        //    "savedDate": "2023-01-14T23:45:16"  -e ora locala
+        //}
     }
 
-    public List<FavoriteLiteraryWorkList> getAllFavoriteLiteraryWorkByUser(Long userId){
-        //metoda pt a vedea toata lista de Favorite adaugata (prose + poetry)
-
+    //metoda pt a vedea toata lista de Favorite adaugata (prose + poetry)
+    public List<FavoriteLiteraryWorkList> getAllFavoriteLiteraryWorkByUser(Long userId) { //quote Rep ???
         //*se salveaza cu data in care a fost creat LiteraryWork
-        //vreau sa apara si titlul operei
         User foundUser = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
         return favoriteLiteraryWorkListRepository.findAllByUserOrderByLiteraryWorkPost(foundUser);
+    }
+
+    public void deleteFromFavoriteList(Long id) { //testat, functioneaza; de aratat lui Olimpiu
+        FavoriteLiteraryWorkList foundFavLiteraryWork = favoriteLiteraryWorkListRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
+        favoriteLiteraryWorkListRepository.delete(foundFavLiteraryWork);
     }
 }

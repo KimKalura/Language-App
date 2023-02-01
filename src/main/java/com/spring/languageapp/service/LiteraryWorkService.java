@@ -46,7 +46,7 @@ public class LiteraryWorkService {
         } else if (literaryWorkRequestDTO.getLiteraryWorkType().equals(LiteraryWorkType.POETRY) && literaryWorkRequestDTO.getText().equals(maxWordsForPoem(literaryWorkRequestDTO.getText(), 250))) {
             literaryWorkRepository.save(literaryWorkPost);
         } else {
-            throw new ResponseStatusException((HttpStatus.NO_CONTENT), "You reach the maxim words for your literary work or you did not chose the type of your literary work!");//cred ca nu e nevoie de exceptie
+            throw new ResponseStatusException((HttpStatus.NO_CONTENT), "You reach the maxim words for your literary work or you did not chose the type of your literary work!");
         }
         literaryWorkPost.setLiteraryWorkType(literaryWorkRequestDTO.getLiteraryWorkType());
         literaryWorkPost.setOriginalLanguage(LanguageType.valueOf(literaryWorkRequestDTO.getOriginalLanguage()));
@@ -84,6 +84,16 @@ public class LiteraryWorkService {
             literaryWorkPost.getTranslationRomanizationList().add(transRomText);
         }
     }
+
+    //adauga traducere/romanizare pentru o opera al unui user + mail
+   /* public TranslationRomanization addTranslationOrRomanizationForALwOfAUser() {//de aratat lui Olimpiu
+        //gasim lw dupa id din DTO
+        //si ii setam  traducere/trans: titlu, text,
+        //aprobare
+        //adaugam si partea de update?
+        mailService.sendApproveMessageForTranslation();
+        return literaryWorkRepository.save();
+    }*/
 
     public List<LiteraryWorkPost> getAllProse() {
         return literaryWorkRepository.findAllByLiteraryWorkType(LiteraryWorkType.PROSE);
@@ -144,5 +154,18 @@ public class LiteraryWorkService {
         return literaryWorkPosts.stream()
                 .filter(literaryWorkPost -> literaryWorkPost.getLiteraryWorkType().equals(LiteraryWorkType.PROSE) || literaryWorkPost.getLiteraryWorkType().equals(LiteraryWorkType.POETRY))
                 .collect(Collectors.toList());
+    }
+
+
+    //stergere lw
+    public void deleteLiteraryWork(Long id) {//testat, functionewza, de aratat lui Olimpiu
+        LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
+        literaryWorkRepository.delete(foundLiteraryWork);
+    }
+
+
+    //update lw
+    public LiteraryWorkPost update(LiteraryWorkPost literaryWorkPost) {  //de reluat
+        return literaryWorkRepository.save(literaryWorkPost);
     }
 }

@@ -1,12 +1,16 @@
 package com.spring.languageapp.dto;
 
+import com.spring.languageapp.model.Comment;
+
+import java.util.List;
+
 public class QuoteRequestDTO {
     private String text;
-    private Long literaryWorkPostId;
+    private Long quoteId;
 
-    public QuoteRequestDTO(String text, Long literaryWorkPostId) {
+    public QuoteRequestDTO(String text, Long quoteId) {
         this.text = text;
-        this.literaryWorkPostId = literaryWorkPostId;
+        this.quoteId = quoteId;
     }
 
     public String getText() {
@@ -17,11 +21,11 @@ public class QuoteRequestDTO {
         this.text = text;
     }
 
-    public Long getLiteraryWorkPostId() {
-        return literaryWorkPostId;
+    public Long getQuoteId() {
+        return quoteId;
     }
 
-    public void setLiteraryWorkPostId(Long literaryWorkPostId) {
-        this.literaryWorkPostId = literaryWorkPostId;
+    public void setQuoteId(Long quoteId) {
+        this.quoteId = quoteId;
     }
 }

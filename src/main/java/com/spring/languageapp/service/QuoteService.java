@@ -1,7 +1,6 @@
 package com.spring.languageapp.service;
 
 import com.spring.languageapp.dto.QuoteRequestDTO;
-import com.spring.languageapp.model.LiteraryWorkPost;
 import com.spring.languageapp.model.Quote;
 import com.spring.languageapp.model.User;
 import com.spring.languageapp.repository.LiteraryWorkRepository;
@@ -9,19 +8,19 @@ import com.spring.languageapp.repository.QuoteRepository;
 import com.spring.languageapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 
 import javax.mail.MessagingException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class QuoteService {
     private QuoteRepository quoteRepository;
-
     private UserService userService;
     private LiteraryWorkService literaryWorkService;
     private LiteraryWorkRepository literaryWorkRepository;
@@ -43,71 +42,60 @@ public class QuoteService {
     //adaug un citat
     //in acest moment se va trimite notificare pe mail fiecarui admin din aplicatie
     //citatul se va adauga in baza de date, cu statusul unapproved
-    public Quote addQuote(Long id, QuoteRequestDTO quoteRequestDTO) throws MessagingException {
-        LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(quoteRequestDTO.getLiteraryWorkPostId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
-        User foundUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
-
+    public Quote addQuote(Long userId, QuoteRequestDTO quoteRequestDTO) throws MessagingException {//de verificat; repository nu poate fi gasit; mail??
+        User foundUser = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
         Quote quote = new Quote();
         quote.setText(quoteRequestDTO.getText());
-        quote.setId(quoteRequestDTO.getLiteraryWorkPostId());
-        quote.setUser(foundUser);
+        quote.setId(quoteRequestDTO.getQuoteId());
+        quote.setUser(foundUser); //pentru a avea mereu un alt user trebuie sa setez din postman un al token +user
 
-        /*if (!foundLiteraryWork.getApproved()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Quote was not approved");
-        }*/
-        foundLiteraryWork.setApproved(true);
-        //mailService.sendApproveForQuote(foundUser.getEmail(), quote, foundLiteraryWork);
-        // "numberOfLikes": null,
-        //    "numberOfDislikes": null,
-        //    "commentList": null
+        quote.setApproved(false);
+        //gasim toti userii cu rol admin
+        //trimitem mail la toti cu cerere de approve qute
+        //admins.forEach((admin)->mailService.sendApproveForQuote(admin, quote))
+        mailService.sendApproveForQuote(foundUser.getEmail(), quote);
         return quoteRepository.save(quote);
-    }
 
-    public boolean unnaprovedQuotesFromLiteraryWork() {
-        Quote quote = new Quote();
-        boolean isApproved = false;
-        if (quote.getText().equals(isApproved)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "the quote was not approved");
-        }
-        return true;
-    }
+        //DE REVAZUT; in postman arata: ; nu crec ca e nevoie in DTO de text, doar de LWid
+        //    "id": 85,
+        //    "text": "To go wrong in one's own way is better than to go right in someone else's. - Fyodor Dostoevsky, Crime and Punishment",
+        //    "numberOfLikes": null,
+        //    "numberOfDislikes": null,
+        //    "commentList": null,
+        //    "approved": false
 
+    }
 
     //aprob un citat (ADMIN)
     //va seta isApproved pe true
-    /*public Quote approvedQuote(Long quoteId) {
-        Quote quote = quoteRepository.findById(quoteId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
-        LiteraryWorkPost literaryWorkPost = ;
-        literaryWorkPost.setApproved(true);
-        boolean isApproved = true;
+    public Quote approveQuote(Long quoteId) throws MessagingException {//de verificat  nu poate gasi repository; mail??
+        Quote foundQuote = quoteRepository.findById(quoteId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "quote not found"));
 
+        foundQuote.setApproved(true);
+        //mailService.sendApproveForQuote(foundUser.getEmail(), foundQuote);
+        return quoteRepository.save(foundQuote);
 
-        //literaryWorkPost.contains(true);
-        return quoteRepository.save();
-    }*/
-
+        //{   POSTMAN
+        //    "id": 90,
+        //    "text": "Do not pity the dead, Harry. Pity the living, and, above all, those who live without love. ― Albus Dumbledore",
+        //    "numberOfLikes": null,
+        //    "numberOfDislikes": null,
+        //    "commentList": [],
+        //    "approved": true
+        //}
+    }
 
     //vad toate citatele
     //se vor afisa doar citatele aprobate (IsApproved=false)
-    public List<Quote> getAllApprovedQuotes() {//Long quoteId
-        /*LiteraryWorkPost foundQuote = literaryWorkRepository.findById(quoteId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "the quote was not found"));
-        //Quote foundQuote = quoteRepository.findById(quoteId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "the quote was not found"));
-        return foundQuote.getUser().getQuoteList().stream()
-                .filter(literaryWorkPost-> Boolean.parseBoolean(literaryWorkPost.getText()))
-                .filter(quote-> hasLiteraryWorkApproved(quote))
-                .collect(Collectors.toList());*/
-        List<LiteraryWorkPost> literaryWorkPost = literaryWorkRepository.findAll();
+    public List<Quote> getAllApprovedQuotes() { // quoteRep nu poate fi gasit -din controller
+        //vreau sa apara si id
 
-        List<Quote> foundQuotes = quoteRepository.findAll();
-        return foundQuotes.stream()
-                .filter(quote -> hasLiteraryWorkApproved(quote))
+        return quoteRepository.findAll().stream()
+
+                 .filter(quote->quote.getApproved())
                 .collect(Collectors.toList());
-
     }
 
-    public boolean hasLiteraryWorkApproved(Quote quote) {
-        List<LiteraryWorkPost> foundText = literaryWorkRepository.findAllByText(quote.getText());
-        return foundText.stream().anyMatch(literaryWorkPost -> literaryWorkPost.getApproved());
-    }
+    //vad toate citatele neaprobate (doar ca ADMIN)
 
 }

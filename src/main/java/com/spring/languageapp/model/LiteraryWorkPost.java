@@ -40,7 +40,7 @@ public class LiteraryWorkPost {
     private Integer numberOfDislikes;
 
 
-    private Boolean isApproved;
+    //private Boolean isApproved;
 
     @OneToMany(mappedBy = "literaryWorkPost", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "literaryWorkPost-translationRomanization")
@@ -63,7 +63,7 @@ public class LiteraryWorkPost {
 
     public LiteraryWorkPost(){}
 
-    public LiteraryWorkPost(Long id, LiteraryWorkType literaryWorkType, LanguageType originalLanguage, LocalDateTime createdDate, String title, String text, Integer numberOfLikes, Integer numberOfDislikes, Boolean isApproved, List<TranslationRomanization> translationRomanizationList, User user, List<Comment> commentList, List<FavoriteLiteraryWorkList> favoriteLiteraryWorkList) {
+    public LiteraryWorkPost(Long id, LiteraryWorkType literaryWorkType, LanguageType originalLanguage, LocalDateTime createdDate, String title, String text, Integer numberOfLikes, Integer numberOfDislikes, List<TranslationRomanization> translationRomanizationList, User user, List<Comment> commentList, List<FavoriteLiteraryWorkList> favoriteLiteraryWorkList) {
         this.id = id;
         this.literaryWorkType = literaryWorkType;
         this.originalLanguage = originalLanguage;
@@ -72,7 +72,6 @@ public class LiteraryWorkPost {
         this.text = text;
         this.numberOfLikes = numberOfLikes;
         this.numberOfDislikes = numberOfDislikes;
-        this.isApproved = isApproved;
         this.translationRomanizationList = translationRomanizationList;
         this.user = user;
         this.commentList = commentList;
@@ -178,11 +177,4 @@ public class LiteraryWorkPost {
         this.favoriteLiteraryWorkList = favoriteLiteraryWorkList;
     }
 
-    public Boolean getApproved() {
-        return isApproved;
-    }
-
-    public void setApproved(Boolean approved) {
-        isApproved = approved;
-    }
 }
