@@ -27,11 +27,16 @@ public class QuoteController {
 
     @GetMapping("/{quoteId}")
     public Quote approvedQuote(@PathVariable Long quoteId) throws MessagingException {
-         return quoteService.approveQuote(quoteId);
+        return quoteService.approveQuote(quoteId);
     }
 
-     @GetMapping("/getAllApprovedQuotes")
-    public List<Boolean> getAllApprovedQuotes(){
+    @GetMapping("/getAllApprovedQuotes")
+    public List<Quote> getAllApprovedQuotes() {
         return quoteService.getAllApprovedQuotes();
+    }
+
+    @GetMapping("/getAllUnapprovedQuotes")
+    public List<Quote> getAllUnapprovedQuotes() {
+        return quoteService.getAllUnapprovedQuotes();
     }
 }

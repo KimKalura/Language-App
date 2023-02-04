@@ -1,13 +1,12 @@
 package com.spring.languageapp.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class FavoriteLiteraryWorkList {
+public class FavoriteUserLiteraryWorkPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_seq")
@@ -33,9 +32,9 @@ public class FavoriteLiteraryWorkList {
 
 
 
-    public FavoriteLiteraryWorkList(){}
+    public FavoriteUserLiteraryWorkPost(){}
 
-    public FavoriteLiteraryWorkList(Long id, LocalDateTime savedDate, User user, LiteraryWorkPost literaryWorkPost) {
+    public FavoriteUserLiteraryWorkPost(Long id, LocalDateTime savedDate, User user, LiteraryWorkPost literaryWorkPost) {
         this.id = id;
         this.savedDate = savedDate;
         this.user = user;

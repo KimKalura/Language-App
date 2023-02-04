@@ -19,4 +19,5 @@ public interface LiteraryWorkRepository extends JpaRepository<LiteraryWorkPost, 
 
     List<LiteraryWorkPost> findAllByText(String text);
 
+
 }

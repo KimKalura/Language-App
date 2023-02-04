@@ -57,13 +57,13 @@ public class LiteraryWorkPost {
 
     @OneToMany(mappedBy = "literaryWorkPost", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "literaryWorkPost-favoriteLiteraryWorkList")
-    private List<FavoriteLiteraryWorkList> favoriteLiteraryWorkList;
+    private List<FavoriteUserLiteraryWorkPost> favoriteUserLiteraryWorkPost;
 
 
 
     public LiteraryWorkPost(){}
 
-    public LiteraryWorkPost(Long id, LiteraryWorkType literaryWorkType, LanguageType originalLanguage, LocalDateTime createdDate, String title, String text, Integer numberOfLikes, Integer numberOfDislikes, List<TranslationRomanization> translationRomanizationList, User user, List<Comment> commentList, List<FavoriteLiteraryWorkList> favoriteLiteraryWorkList) {
+    public LiteraryWorkPost(Long id, LiteraryWorkType literaryWorkType, LanguageType originalLanguage, LocalDateTime createdDate, String title, String text, Integer numberOfLikes, Integer numberOfDislikes, List<TranslationRomanization> translationRomanizationList, User user, List<Comment> commentList, List<FavoriteUserLiteraryWorkPost> favoriteUserLiteraryWorkPost) {
         this.id = id;
         this.literaryWorkType = literaryWorkType;
         this.originalLanguage = originalLanguage;
@@ -75,7 +75,7 @@ public class LiteraryWorkPost {
         this.translationRomanizationList = translationRomanizationList;
         this.user = user;
         this.commentList = commentList;
-        this.favoriteLiteraryWorkList = favoriteLiteraryWorkList;
+        this.favoriteUserLiteraryWorkPost = favoriteUserLiteraryWorkPost;
     }
 
     public Long getId() {
@@ -169,12 +169,12 @@ public class LiteraryWorkPost {
         this.commentList = commentList;
     }
 
-    public List<FavoriteLiteraryWorkList> getFavoriteLiteraryWorkList() {
-        return favoriteLiteraryWorkList;
+    public List<FavoriteUserLiteraryWorkPost> getFavoriteLiteraryWorkList() {
+        return favoriteUserLiteraryWorkPost;
     }
 
-    public void setFavoriteLiteraryWorkList(List<FavoriteLiteraryWorkList> favoriteLiteraryWorkList) {
-        this.favoriteLiteraryWorkList = favoriteLiteraryWorkList;
+    public void setFavoriteLiteraryWorkList(List<FavoriteUserLiteraryWorkPost> favoriteUserLiteraryWorkPost) {
+        this.favoriteUserLiteraryWorkPost = favoriteUserLiteraryWorkPost;
     }
 
 }

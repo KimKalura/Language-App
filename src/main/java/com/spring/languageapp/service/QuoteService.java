@@ -1,10 +1,10 @@
 package com.spring.languageapp.service;
 
 import com.spring.languageapp.dto.QuoteRequestDTO;
-import com.spring.languageapp.model.Quote;
-import com.spring.languageapp.model.User;
+import com.spring.languageapp.model.*;
 import com.spring.languageapp.repository.LiteraryWorkRepository;
 import com.spring.languageapp.repository.QuoteRepository;
+import com.spring.languageapp.repository.RoleRepository;
 import com.spring.languageapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,63 +39,47 @@ public class QuoteService {
     }
 
 
-    //adaug un citat
-    //in acest moment se va trimite notificare pe mail fiecarui admin din aplicatie
-    //citatul se va adauga in baza de date, cu statusul unapproved
-    public Quote addQuote(Long userId, QuoteRequestDTO quoteRequestDTO) throws MessagingException {//de verificat; repository nu poate fi gasit; mail??
+    public Quote addQuote(Long userId, QuoteRequestDTO quoteRequestDTO) throws MessagingException { //nu functioneaza
         User foundUser = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
         Quote quote = new Quote();
         quote.setText(quoteRequestDTO.getText());
         quote.setId(quoteRequestDTO.getQuoteId());
-        quote.setUser(foundUser); //pentru a avea mereu un alt user trebuie sa setez din postman un al token +user
-
+        quote.setUser(foundUser);
         quote.setApproved(false);
-        //gasim toti userii cu rol admin
-        //trimitem mail la toti cu cerere de approve qute
-        //admins.forEach((admin)->mailService.sendApproveForQuote(admin, quote))
-        mailService.sendApproveForQuote(foundUser.getEmail(), quote);
+        List<User> admins = userRepository.findAll();//gasim toti userii cu rol admin
+        //admins.forEach(admin -> mailService.sendApproveForQuote_Admin(admin, quote));//trimitem mail la toti cu cerere de approve quote
+        /*admins.forEach((admin) -> {
+            try {
+                mailService.sendApproveForQuote_Admin(String.valueOf(admin), quote);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
+        });*/
         return quoteRepository.save(quote);
-
-        //DE REVAZUT; in postman arata: ; nu crec ca e nevoie in DTO de text, doar de LWid
-        //    "id": 85,
-        //    "text": "To go wrong in one's own way is better than to go right in someone else's. - Fyodor Dostoevsky, Crime and Punishment",
-        //    "numberOfLikes": null,
-        //    "numberOfDislikes": null,
-        //    "commentList": null,
-        //    "approved": false
-
+        //cand adaug Quote, atunci notific adminul ca e un nou quote; iar adminul face approve
     }
 
-    //aprob un citat (ADMIN)
-    //va seta isApproved pe true
-    public Quote approveQuote(Long quoteId) throws MessagingException {//de verificat  nu poate gasi repository; mail??
+    public Quote approveQuote(Long quoteId){
         Quote foundQuote = quoteRepository.findById(quoteId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "quote not found"));
-
         foundQuote.setApproved(true);
-        //mailService.sendApproveForQuote(foundUser.getEmail(), foundQuote);
         return quoteRepository.save(foundQuote);
-
-        //{   POSTMAN
-        //    "id": 90,
-        //    "text": "Do not pity the dead, Harry. Pity the living, and, above all, those who live without love. ― Albus Dumbledore",
-        //    "numberOfLikes": null,
-        //    "numberOfDislikes": null,
-        //    "commentList": [],
-        //    "approved": true
-        //}
     }
 
-    //vad toate citatele
-    //se vor afisa doar citatele aprobate (IsApproved=false)
-    public List<Quote> getAllApprovedQuotes() { // quoteRep nu poate fi gasit -din controller
-        //vreau sa apara si id
-
+    public List<Quote> getAllApprovedQuotes() {
         return quoteRepository.findAll().stream()
-
-                 .filter(quote->quote.getApproved())
+                .filter(quote -> quote.getApproved())
                 .collect(Collectors.toList());
     }
 
-    //vad toate citatele neaprobate (doar ca ADMIN)
+    public List<Quote> getAllUnapprovedQuotes() {
+        return quoteRepository.findAll().stream()
+                .filter(quote -> !quote.getApproved())
+                .collect(Collectors.toList());
+    }
 
+
+    //met ajutatoare
+    public Quote findQuote(Long id) {
+        return quoteRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "quote was not found"));
+    }
 }

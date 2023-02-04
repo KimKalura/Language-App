@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PhotoRepository extends JpaRepository<Role,Long> {
+public interface PhotoRepository extends JpaRepository<PhotoPost,Long> {
 
 //  List<PhotoPost> findByUser(User user);
 //  Optional<PhotoPost> findByName(String fileName);

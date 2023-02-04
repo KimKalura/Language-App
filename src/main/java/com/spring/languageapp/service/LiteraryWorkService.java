@@ -1,7 +1,9 @@
 package com.spring.languageapp.service;
 
+import com.spring.languageapp.dto.LikeDislikeRequestDTO;
 import com.spring.languageapp.dto.LiteraryWorkRequestDTO;
 import com.spring.languageapp.dto.LiteraryWorkResponseDTO;
+import com.spring.languageapp.dto.TranslationRomanizationRequestDTO;
 import com.spring.languageapp.model.*;
 import com.spring.languageapp.repository.FavoriteLiteraryWorkListRepository;
 import com.spring.languageapp.repository.LiteraryWorkRepository;
@@ -40,7 +42,6 @@ public class LiteraryWorkService {
 
     public LiteraryWorkPost addLiteraryWork(LiteraryWorkRequestDTO literaryWorkRequestDTO) {
         LiteraryWorkPost literaryWorkPost = new LiteraryWorkPost();
-
         if (literaryWorkRequestDTO.getLiteraryWorkType().equals(LiteraryWorkType.PROSE) && literaryWorkRequestDTO.getText().equals(maxWordsForProse(literaryWorkRequestDTO.getText(), 1000))) {
             literaryWorkRepository.save(literaryWorkPost);
         } else if (literaryWorkRequestDTO.getLiteraryWorkType().equals(LiteraryWorkType.POETRY) && literaryWorkRequestDTO.getText().equals(maxWordsForPoem(literaryWorkRequestDTO.getText(), 250))) {
@@ -85,15 +86,27 @@ public class LiteraryWorkService {
         }
     }
 
-    //adauga traducere/romanizare pentru o opera al unui user + mail
-   /* public TranslationRomanization addTranslationOrRomanizationForALwOfAUser() {//de aratat lui Olimpiu
+    //adauga traducere/romanizare pentru o opera a unui user + mail
+    public TranslationRomanization addTranslationOrRomanizationForALwOfAUser(TranslationRomanizationRequestDTO translationRomanizationRequestDTO) {//functioneaza,1-1 entitate-dto nu sunt sigura la dto, de aratat
         //gasim lw dupa id din DTO
-        //si ii setam  traducere/trans: titlu, text,
-        //aprobare
+        //si ii setam  traducere/trans: titlu, text,+idpostuluilw   id
+        //aprobare --mail*
         //adaugam si partea de update?
-        mailService.sendApproveMessageForTranslation();
-        return literaryWorkRepository.save();
-    }*/
+        LiteraryWorkPost literaryWorkPost = literaryWorkRepository.findById(translationRomanizationRequestDTO.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
+
+        TranslationRomanization translationRomanization = new TranslationRomanization();
+        translationRomanization.setLanguage(LanguageType.valueOf(translationRomanizationRequestDTO.getLanguage()));
+        translationRomanization.setTranslatedTitle(translationRomanizationRequestDTO.getTranslatedTitle());
+        translationRomanization.setTranslatedText(translationRomanizationRequestDTO.getTranslatedText());
+        translationRomanization.setRomanizationText(translationRomanizationRequestDTO.getRomanizationText());
+        translationRomanization.setCreatedDate(LocalDateTime.now());
+
+        literaryWorkPost.getTranslationRomanizationList().add(translationRomanization);
+        translationRomanization.setLiteraryWorkPost(literaryWorkPost);
+
+        //mailService.sendApproveMessageForTranslation();
+        return translationRomanizationRepository.save(translationRomanization);
+    }
 
     public List<LiteraryWorkPost> getAllProse() {
         return literaryWorkRepository.findAllByLiteraryWorkType(LiteraryWorkType.PROSE);
@@ -147,7 +160,6 @@ public class LiteraryWorkService {
         }
     }
 
-    //vad doar operere literare (poeziile + prozele):
     public List<LiteraryWorkPost> getAllProseAndPoetry() {
         List<LiteraryWorkPost> literaryWorkPosts = literaryWorkRepository.findAll();
 
@@ -156,16 +168,37 @@ public class LiteraryWorkService {
                 .collect(Collectors.toList());
     }
 
-
-    //stergere lw
-    public void deleteLiteraryWork(Long id) {//testat, functionewza, de aratat lui Olimpiu
+    public void deleteLiteraryWork(Long id) {
         LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
         literaryWorkRepository.delete(foundLiteraryWork);
     }
 
+    public LiteraryWorkPost addLikeUnlikeForALiteraryWork(Long userId, Long literaryWorkId) {
+        LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(literaryWorkId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
+        //User foundUser = userService.findLoggedInUser();
+        User foundUser = userService.findUser(userId);
+        foundLiteraryWork.setUser(foundUser);
 
-    //update lw
-    public LiteraryWorkPost update(LiteraryWorkPost literaryWorkPost) {  //de reluat
-        return literaryWorkRepository.save(literaryWorkPost);
+//        if (foundLiteraryWork.getNumberOfLikes() == null || foundLiteraryWork.getNumberOfLikes() != null) {
+//            Integer like = 1;
+//            foundLiteraryWork.setNumberOfLikes(like);
+//            like++;
+//        } else {
+//            Integer dislike = -1;
+//            foundLiteraryWork.setNumberOfDislikes(dislike);
+//
+//        }
+        return literaryWorkRepository.save(foundLiteraryWork);
+    }
+
+
+
+    public LiteraryWorkPost update(Long literaryWorkId){
+        LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(literaryWorkId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
+            return literaryWorkRepository.save(foundLiteraryWork);
+    }
+
+    public LiteraryWorkPost findLiteraryWork(Long id) {
+        return literaryWorkRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
     }
 }

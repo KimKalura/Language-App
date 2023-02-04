@@ -3,6 +3,7 @@ package com.spring.languageapp.service;
 import com.spring.languageapp.model.Comment;
 import com.spring.languageapp.model.LiteraryWorkPost;
 import com.spring.languageapp.model.Quote;
+import com.spring.languageapp.model.RoleType;
 import com.spring.languageapp.repository.LiteraryWorkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -58,7 +59,7 @@ public class MailService {
     }
 
     //aprobare pt QUOTE
-    public void sendApproveForQuote(String recipientMail, Quote quote) throws MessagingException {
+    public void sendApproveForQuote_Admin(String recipientMail, Quote quote) throws MessagingException {
 
         MimeMessage message = emailSender.createMimeMessage();
 
@@ -86,4 +87,7 @@ public class MailService {
         helper.setText(literaryWorkPost.getUser().getUsername() + " added your creation " + "< " + literaryWorkPost.getTitle() + " >" + " in Favorite List.");
         emailSender.send(message);
     }
+
+    //refaccoriza- overloadinf 7:30
+    //extract
 }

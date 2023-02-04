@@ -1,7 +1,7 @@
 package com.spring.languageapp.service;
 
 import com.spring.languageapp.dto.FavoriteLiteraryWorkRequestDTO;
-import com.spring.languageapp.model.FavoriteLiteraryWorkList;
+import com.spring.languageapp.model.FavoriteUserLiteraryWorkPost;
 import com.spring.languageapp.model.LiteraryWorkPost;
 import com.spring.languageapp.model.User;
 import com.spring.languageapp.repository.FavoriteLiteraryWorkListRepository;
@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteLiteraryWorkService {
@@ -37,7 +38,7 @@ public class FavoriteLiteraryWorkService {
 
     //adaug la favorite o opera sau o poza
     //autorul poeziei, de exemplu, va primi o notificare pe mail ca poezia lui a fost adaugata la favorite de catre cele care a adaugat-o
-    public FavoriteLiteraryWorkList addLiteraryWorkToFavoriteList(FavoriteLiteraryWorkRequestDTO favoriteLiteraryWorkRequestDTO) throws MessagingException {//quoterep
+    public FavoriteUserLiteraryWorkPost addLiteraryWorkToFavoriteList(FavoriteLiteraryWorkRequestDTO favoriteLiteraryWorkRequestDTO) throws MessagingException {
         LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(favoriteLiteraryWorkRequestDTO.getLiteraryWorkPostId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User foundUser = userRepository.findUserByUsername(userDetails.getUsername()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
@@ -47,30 +48,25 @@ public class FavoriteLiteraryWorkService {
         //** List<FavoriteLiteraryWorkList> favoriteLiteraryWorkList = foundUser.getFavoriteLiteraryWorkList();
         //foundFavLW.setUser(foundUser);
 
-        FavoriteLiteraryWorkList favoriteLiteraryWork = new FavoriteLiteraryWorkList();
+        FavoriteUserLiteraryWorkPost favoriteLiteraryWork = new FavoriteUserLiteraryWorkPost();
         favoriteLiteraryWork.setLiteraryWorkPost(foundLiteraryWork);
         favoriteLiteraryWork.setUser(foundUser);
-        favoriteLiteraryWork.setSavedDate(foundLiteraryWork.getCreatedDate());//se salveaza cu data in care a fost creat LiteraryWork
+        favoriteLiteraryWork.setSavedDate(foundLiteraryWork.getCreatedDate());
 
         mailService.sendMessegeForFavoriteAddedLiteraryWork(foundUser.getEmail(), foundLiteraryWork);
 
         return favoriteLiteraryWorkListRepository.save(favoriteLiteraryWork);
-
-        //{
-        //    "id": 91,
-        //    "savedDate": "2023-01-14T23:45:16"  -e ora locala
-        //}
     }
 
     //metoda pt a vedea toata lista de Favorite adaugata (prose + poetry)
-    public List<FavoriteLiteraryWorkList> getAllFavoriteLiteraryWorkByUser(Long userId) { //quote Rep ???
-        //*se salveaza cu data in care a fost creat LiteraryWork
+    public List<LiteraryWorkPost> getAllFavoriteLiteraryWorkByUser(Long userId) {  //vezi postman
         User foundUser = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
-        return favoriteLiteraryWorkListRepository.findAllByUserOrderByLiteraryWorkPost(foundUser);
+        List<FavoriteUserLiteraryWorkPost> favoriteUserLiteraryWorkPosts = favoriteLiteraryWorkListRepository.findAllByUserOrderByLiteraryWorkPost(foundUser);
+        return favoriteUserLiteraryWorkPosts.stream().map(favoriteUserLiteraryWorkPost -> favoriteUserLiteraryWorkPost.getLiteraryWorkPost()).collect(Collectors.toList());
     }
 
-    public void deleteFromFavoriteList(Long id) { //testat, functioneaza; de aratat lui Olimpiu
-        FavoriteLiteraryWorkList foundFavLiteraryWork = favoriteLiteraryWorkListRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
+    public void deleteFromFavoriteList(Long id) {
+        FavoriteUserLiteraryWorkPost foundFavLiteraryWork = favoriteLiteraryWorkListRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
         favoriteLiteraryWorkListRepository.delete(foundFavLiteraryWork);
     }
 }

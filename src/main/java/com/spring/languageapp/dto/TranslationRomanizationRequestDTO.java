@@ -8,13 +8,15 @@ public class TranslationRomanizationRequestDTO {
     private String language;
     private String translatedTitle;
     private String translatedText;
+    private String romanizationText;
     private LocalDateTime createdDate;
 
-    public TranslationRomanizationRequestDTO(Long id, String language, String translatedTitle, String translatedText, LocalDateTime createdDate) {
+    public TranslationRomanizationRequestDTO(Long id, String language, String translatedTitle, String translatedText, String romanizationText, LocalDateTime createdDate) {
         this.id = id;
         this.language = language;
         this.translatedTitle = translatedTitle;
         this.translatedText = translatedText;
+        this.romanizationText = romanizationText;
         this.createdDate = createdDate;
     }
 
@@ -48,6 +50,15 @@ public class TranslationRomanizationRequestDTO {
 
     public void setTranslatedText(String translatedText) {
         this.translatedText = translatedText;
+    }
+
+
+    public String getRomanizationText() {
+        return romanizationText;
+    }
+
+    public void setRomanizationText(String romanizationText) {
+        this.romanizationText = romanizationText;
     }
 
     public LocalDateTime getCreatedDate() {

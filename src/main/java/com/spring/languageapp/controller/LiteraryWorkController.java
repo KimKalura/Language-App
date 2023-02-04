@@ -1,8 +1,11 @@
 package com.spring.languageapp.controller;
 
+import com.spring.languageapp.dto.LikeDislikeRequestDTO;
 import com.spring.languageapp.dto.LiteraryWorkRequestDTO;
 import com.spring.languageapp.dto.LiteraryWorkResponseDTO;
+import com.spring.languageapp.dto.TranslationRomanizationRequestDTO;
 import com.spring.languageapp.model.LiteraryWorkPost;
+import com.spring.languageapp.model.TranslationRomanization;
 import com.spring.languageapp.service.LiteraryWorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +26,11 @@ public class LiteraryWorkController {
     public LiteraryWorkPost addLiteraryWork(@RequestBody LiteraryWorkRequestDTO literaryWorkRequestDTO) {
         return literaryWorkService.addLiteraryWork(literaryWorkRequestDTO);
     }
+
+  /*  @PostMapping("/addtranslation")
+    public TranslationRomanization addTranslationOrRomanizationForALwOfAUser(@RequestBody TranslationRomanizationRequestDTO translationRomanizationRequestDTO) {
+        return literaryWorkService.addTranslationOrRomanizationForALwOfAUser(translationRomanizationRequestDTO);
+    }*/
 
     @GetMapping("/allProse")
     public List<LiteraryWorkPost> getAllProse() {
@@ -47,6 +55,11 @@ public class LiteraryWorkController {
     @DeleteMapping("/{id}")
     public void deleteLiteraryWork(@PathVariable Long id) {
         literaryWorkService.deleteLiteraryWork(id);
+    }
+
+    @PostMapping("/{userId}/{literaryWorkId}")
+    public LiteraryWorkPost addLikeUnlikeForALiteraryWork(@PathVariable Long userId, @PathVariable Long literaryWorkId){
+        return literaryWorkService.addLikeUnlikeForALiteraryWork(userId, literaryWorkId);
     }
 
 }

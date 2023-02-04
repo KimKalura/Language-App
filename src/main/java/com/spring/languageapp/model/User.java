@@ -1,6 +1,5 @@
 package com.spring.languageapp.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -59,7 +58,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "user-favoriteLiteraryWorkList")
-    private List<FavoriteLiteraryWorkList> favoriteLiteraryWorkList;
+    private List<FavoriteUserLiteraryWorkPost> favoriteUserLiteraryWorkPost;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "user-quote")
@@ -81,7 +80,7 @@ public class User {
 
     public User() {}
 
-    public User(Long id, String username, String email, String password, String country, String nationality, String nativeLanguage, String practicedLanguage, LocalDate dateOfBirth, List<LiteraryWorkPost> literaryWorkPostList, List<PhotoPost> photoList, List<FavoritePhotoList> favoritePhotoList, List<FavoriteLiteraryWorkList> favoriteLiteraryWorkList, List<Quote> quoteList, List<Comment> commentList, List<Role> roleList) {
+    public User(Long id, String username, String email, String password, String country, String nationality, String nativeLanguage, String practicedLanguage, LocalDate dateOfBirth, List<LiteraryWorkPost> literaryWorkPostList, List<PhotoPost> photoList, List<FavoritePhotoList> favoritePhotoList, List<FavoriteUserLiteraryWorkPost> favoriteUserLiteraryWorkPost, List<Quote> quoteList, List<Comment> commentList, List<Role> roleList) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -94,7 +93,7 @@ public class User {
         this.literaryWorkPostList = literaryWorkPostList;
         this.photoList = photoList;
         this.favoritePhotoList = favoritePhotoList;
-        this.favoriteLiteraryWorkList = favoriteLiteraryWorkList;
+        this.favoriteUserLiteraryWorkPost = favoriteUserLiteraryWorkPost;
         this.quoteList = quoteList;
         this.commentList = commentList;
         this.roleList = roleList;
@@ -196,12 +195,12 @@ public class User {
         this.favoritePhotoList = favoritePhotoList;
     }
 
-    public List<FavoriteLiteraryWorkList> getFavoriteLiteraryWorkList() {
-        return favoriteLiteraryWorkList;
+    public List<FavoriteUserLiteraryWorkPost> getFavoriteLiteraryWorkList() {
+        return favoriteUserLiteraryWorkPost;
     }
 
-    public void setFavoriteLiteraryWorkList(List<FavoriteLiteraryWorkList> favoriteLiteraryWorkList) {
-        this.favoriteLiteraryWorkList = favoriteLiteraryWorkList;
+    public void setFavoriteLiteraryWorkList(List<FavoriteUserLiteraryWorkPost> favoriteUserLiteraryWorkPost) {
+        this.favoriteUserLiteraryWorkPost = favoriteUserLiteraryWorkPost;
     }
 
     public List<Quote> getQuoteList() {
