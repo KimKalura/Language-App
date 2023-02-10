@@ -5,15 +5,15 @@ import com.spring.languageapp.dto.LiteraryWorkRequestDTO;
 import com.spring.languageapp.dto.LiteraryWorkResponseDTO;
 import com.spring.languageapp.dto.TranslationRomanizationRequestDTO;
 import com.spring.languageapp.model.*;
-import com.spring.languageapp.repository.FavoriteLiteraryWorkListRepository;
-import com.spring.languageapp.repository.LiteraryWorkRepository;
-import com.spring.languageapp.repository.TranslationRomanizationRepository;
-import com.spring.languageapp.repository.UserRepository;
+import com.spring.languageapp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,21 +27,23 @@ public class LiteraryWorkService {
     private TranslationRomanizationRepository translationRomanizationRepository;
     private FavoriteLiteraryWorkListRepository favoriteLiteraryWorkListRepository;
     private MailService mailService;
-
+    private PhotoRepository photoRepository;
 
     @Autowired
-    public LiteraryWorkService(LiteraryWorkRepository literaryWorkRepository, UserService userService, UserRepository userRepository, TranslationRomanizationRepository translationRomanizationRepository, FavoriteLiteraryWorkListRepository favoriteLiteraryWorkListRepository, MailService mailService) {
+    public LiteraryWorkService(LiteraryWorkRepository literaryWorkRepository, UserService userService, UserRepository userRepository, TranslationRomanizationRepository translationRomanizationRepository, FavoriteLiteraryWorkListRepository favoriteLiteraryWorkListRepository, MailService mailService, PhotoRepository photoRepository) {
         this.literaryWorkRepository = literaryWorkRepository;
         this.userService = userService;
         this.userRepository = userRepository;
         this.translationRomanizationRepository = translationRomanizationRepository;
         this.favoriteLiteraryWorkListRepository = favoriteLiteraryWorkListRepository;
         this.mailService = mailService;
+        this.photoRepository = photoRepository;
     }
 
 
     public LiteraryWorkPost addLiteraryWork(LiteraryWorkRequestDTO literaryWorkRequestDTO) {
         LiteraryWorkPost literaryWorkPost = new LiteraryWorkPost();
+
         if (literaryWorkRequestDTO.getLiteraryWorkType().equals(LiteraryWorkType.PROSE) && literaryWorkRequestDTO.getText().equals(maxWordsForProse(literaryWorkRequestDTO.getText(), 1000))) {
             literaryWorkRepository.save(literaryWorkPost);
         } else if (literaryWorkRequestDTO.getLiteraryWorkType().equals(LiteraryWorkType.POETRY) && literaryWorkRequestDTO.getText().equals(maxWordsForPoem(literaryWorkRequestDTO.getText(), 250))) {
@@ -54,6 +56,7 @@ public class LiteraryWorkService {
         literaryWorkPost.setTitle(literaryWorkRequestDTO.getTitle());
         literaryWorkPost.setCreatedDate(LocalDateTime.now());
         literaryWorkPost.setText(literaryWorkRequestDTO.getText());
+
         addTranslationOrRomanization(literaryWorkRequestDTO, literaryWorkPost);
         literaryWorkPost.setUser(userService.findLoggedInUser());
         return literaryWorkRepository.save(literaryWorkPost);
@@ -87,12 +90,14 @@ public class LiteraryWorkService {
     }
 
     //adauga traducere/romanizare pentru o opera a unui user + mail
-    public TranslationRomanization addTranslationOrRomanizationForALwOfAUser(TranslationRomanizationRequestDTO translationRomanizationRequestDTO) {//functioneaza,1-1 entitate-dto nu sunt sigura la dto, de aratat
+    public TranslationRomanization addTranslationOrRomanizationForALwOfAUser(TranslationRomanizationRequestDTO translationRomanizationRequestDTO) throws MessagingException {//functioneaza,1-1 entitate-dto nu sunt sigura la dto, de aratat
         //gasim lw dupa id din DTO
         //si ii setam  traducere/trans: titlu, text,+idpostuluilw   id
-        //aprobare --mail*
-        //adaugam si partea de update?
+        //aprobare --mail - testat functioneaza cu mail
+        //adaugam si partea de update?-nu
         LiteraryWorkPost literaryWorkPost = literaryWorkRepository.findById(translationRomanizationRequestDTO.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User foundUser = userRepository.findUserByUsername(userDetails.getUsername()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
 
         TranslationRomanization translationRomanization = new TranslationRomanization();
         translationRomanization.setLanguage(LanguageType.valueOf(translationRomanizationRequestDTO.getLanguage()));
@@ -104,7 +109,7 @@ public class LiteraryWorkService {
         literaryWorkPost.getTranslationRomanizationList().add(translationRomanization);
         translationRomanization.setLiteraryWorkPost(literaryWorkPost);
 
-        //mailService.sendApproveMessageForTranslation();
+        mailService.sendApproveMessageForTranslation(foundUser.getEmail(), literaryWorkPost);
         return translationRomanizationRepository.save(translationRomanization);
     }
 
@@ -173,32 +178,37 @@ public class LiteraryWorkService {
         literaryWorkRepository.delete(foundLiteraryWork);
     }
 
-    public LiteraryWorkPost addLikeUnlikeForALiteraryWork(Long userId, Long literaryWorkId) {
+    public LiteraryWorkPost addLikeDislikeForALiteraryWork(Long literaryWorkId) {
         LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(literaryWorkId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
         //User foundUser = userService.findLoggedInUser();
-        User foundUser = userService.findUser(userId);
-        foundLiteraryWork.setUser(foundUser);
+        User likeUser = userService.findLoggedInUser();
+        //cine a facut postarea ca sa ii putem da notificare prin mail
+        User postCreator = foundLiteraryWork.getUser();
 
-//        if (foundLiteraryWork.getNumberOfLikes() == null || foundLiteraryWork.getNumberOfLikes() != null) {
-//            Integer like = 1;
-//            foundLiteraryWork.setNumberOfLikes(like);
-//            like++;
-//        } else {
-//            Integer dislike = -1;
-//            foundLiteraryWork.setNumberOfDislikes(dislike);
-//
-//        }
+        foundLiteraryWork.setNumberOfLikes(foundLiteraryWork.getNumberOfLikes()+1);
+
+        //dau un mail folosindu-ma de numele lui likeUser catre postCreator
         return literaryWorkRepository.save(foundLiteraryWork);
     }
 
-
-
-    public LiteraryWorkPost update(Long literaryWorkId){
+    public LiteraryWorkPost update(Long literaryWorkId) {
         LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(literaryWorkId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
-            return literaryWorkRepository.save(foundLiteraryWork);
+        return literaryWorkRepository.save(foundLiteraryWork);
     }
 
     public LiteraryWorkPost findLiteraryWork(Long id) {
         return literaryWorkRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
+    }
+    public List<Long> getAllLiteraryWorkAndPhotos() {
+        List<LiteraryWorkPost> allLiteraryWorks = literaryWorkRepository.findAll();
+        List<PhotoPost> allPhotos = photoRepository.findAll();
+        List<Long> allLiteraryWorksIds = allLiteraryWorks.stream().map(literaryWorkPost -> literaryWorkPost.getId()).collect(Collectors.toList());
+        List<Long> allPhotosIds= allPhotos.stream().map(photoPost ->  photoPost.getId()).collect(Collectors.toList());
+        List<Long> allPostsIds = new ArrayList<>();
+
+        allPostsIds.addAll(allLiteraryWorksIds);
+        allPostsIds.addAll(allPhotosIds);
+
+        return allPostsIds;
     }
 }

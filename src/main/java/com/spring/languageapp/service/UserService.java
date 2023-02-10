@@ -65,4 +65,8 @@ public class UserService {
     public User findUser(Long id){
         return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "the user was not found"));
     }
+
+ /*   public List<User> getAllAdmins() {
+        return userRepository.findAllBy(RoleType.ROLE_ADMIN);
+    }*/
 }

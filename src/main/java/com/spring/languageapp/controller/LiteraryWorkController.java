@@ -1,15 +1,14 @@
 package com.spring.languageapp.controller;
 
-import com.spring.languageapp.dto.LikeDislikeRequestDTO;
-import com.spring.languageapp.dto.LiteraryWorkRequestDTO;
-import com.spring.languageapp.dto.LiteraryWorkResponseDTO;
-import com.spring.languageapp.dto.TranslationRomanizationRequestDTO;
+import com.spring.languageapp.dto.*;
+import com.spring.languageapp.model.Comment;
 import com.spring.languageapp.model.LiteraryWorkPost;
 import com.spring.languageapp.model.TranslationRomanization;
 import com.spring.languageapp.service.LiteraryWorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 @RestController
@@ -27,10 +26,10 @@ public class LiteraryWorkController {
         return literaryWorkService.addLiteraryWork(literaryWorkRequestDTO);
     }
 
-  /*  @PostMapping("/addtranslation")
-    public TranslationRomanization addTranslationOrRomanizationForALwOfAUser(@RequestBody TranslationRomanizationRequestDTO translationRomanizationRequestDTO) {
+    @PostMapping("/addtranslation")
+    public TranslationRomanization addTranslationOrRomanizationForALwOfAUser(@RequestBody TranslationRomanizationRequestDTO translationRomanizationRequestDTO) throws MessagingException {
         return literaryWorkService.addTranslationOrRomanizationForALwOfAUser(translationRomanizationRequestDTO);
-    }*/
+    }
 
     @GetMapping("/allProse")
     public List<LiteraryWorkPost> getAllProse() {
@@ -58,10 +57,14 @@ public class LiteraryWorkController {
     }
 
     @PostMapping("/{userId}/{literaryWorkId}")
-    public LiteraryWorkPost addLikeUnlikeForALiteraryWork(@PathVariable Long userId, @PathVariable Long literaryWorkId){
-        return literaryWorkService.addLikeUnlikeForALiteraryWork(userId, literaryWorkId);
+    public LiteraryWorkPost addLikeDislikeForALiteraryWork(@PathVariable Long literaryWorkId){
+        return literaryWorkService.addLikeDislikeForALiteraryWork(literaryWorkId);
     }
 
+    @GetMapping("/feed")
+    public List<Long> getAllLiteraryWorkAndPhotos() {
+        return literaryWorkService.getAllLiteraryWorkAndPhotos();
+    }
 }
 
 

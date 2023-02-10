@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.languageapp.dto.CommentRequestDTO;
 import com.spring.languageapp.dto.CommentResponseDTO;
-import com.spring.languageapp.model.Comment;
-import com.spring.languageapp.model.LiteraryWorkPost;
-import com.spring.languageapp.model.PhotoPost;
-import com.spring.languageapp.model.Quote;
+import com.spring.languageapp.model.*;
 import com.spring.languageapp.repository.CommentRepository;
 import com.spring.languageapp.repository.LiteraryWorkRepository;
 import com.spring.languageapp.repository.PhotoRepository;
@@ -25,6 +22,7 @@ import org.springframework.web.util.UriTemplate;
 import javax.mail.MessagingException;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class CommentService {
@@ -47,7 +45,7 @@ public class CommentService {
 
     private static final String CONTAINS_PROFANITY_TEXT_URL = "https://www.purgomalum.com/service/containsprofanity?text={wordsToCheck}";
 
-    // http://api1-eu.webpurify.com/services/rest/
+    //http://api1-eu.webpurify.com/services/rest/
 
     @Autowired
 
@@ -67,33 +65,31 @@ public class CommentService {
 
     public Comment addComment(CommentRequestDTO commentRequestDTO) throws JsonProcessingException, MessagingException {
         String response = getResponseBodyJson(CONTAINS_PROFANITY_TEXT_URL, commentRequestDTO.getComment());
-
-        LiteraryWorkPost foundLiteraryWork = literaryWorkService.findLiteraryWork(commentRequestDTO.getLiteraryWorkPostId());
-        Quote foundQuote = quoteService.findQuote(commentRequestDTO.getQuoteId());
-        PhotoPost foundPhoto = photoService.findPhoto(commentRequestDTO.getPhotoId());
-
-        if (foundLiteraryWork.getId() != null) {
-            literaryWorkRepository.findById(foundLiteraryWork.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
-        }
-        if (foundQuote.getId() != null) {
-            quoteRepository.findById(foundQuote.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "guote not found"));
-        }
-        if (foundPhoto.getId() != null) {
-            photoRepository.findAllById(foundPhoto.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "photo not found"));
-        }
-
         if (Boolean.parseBoolean(response)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "the comment contains profanity words");
         }
+
         Comment comment = new Comment();
         comment.setComment(commentRequestDTO.getComment());
-        comment.setLiteraryWorkPost(foundLiteraryWork);
-        comment.setQuote(foundQuote);
         comment.setCreatedDate(LocalDateTime.now());
+        comment.setUser(userService.findLoggedInUser());
 
-//        foundLiteraryWork.getCommentList().add(comment);
-//        comment.setLiteraryWorkPost(foundLiteraryWork);
-        // mailService.sendCommentMessage(foundUser.getEmail(), ?);
+        if (commentRequestDTO.getLiteraryWorkPostId() != null) {
+            LiteraryWorkPost foundLiteraryWork = literaryWorkService.findLiteraryWork(commentRequestDTO.getLiteraryWorkPostId());
+            //salvam comentariul
+            foundLiteraryWork.getCommentList().add(comment);
+            comment.setLiteraryWorkPost(foundLiteraryWork);
+        } else if (commentRequestDTO.getQuoteId() != null) {
+            Quote foundQuote = quoteService.findQuote(commentRequestDTO.getQuoteId());
+            foundQuote.getCommentList().add(comment);
+            comment.setQuote(foundQuote);
+        } else if (commentRequestDTO.getPhotoId() != null) {
+            PhotoPost foundPhotoPost = photoService.findPhoto(commentRequestDTO.getPhotoId());
+            foundPhotoPost.getCommentList().add(comment);
+            comment.setPhoto(foundPhotoPost);
+        }
+
+        //mailService.sendCommentMessage(foundUser.getEmail(), comment);
         return commentRepository.save(comment);
     }
 
@@ -112,7 +108,7 @@ public class CommentService {
         return response.getBody();
     }
 
-    public CommentResponseDTO constructNewCommentResponseDTO(Comment comment) {
+    /*public CommentResponseDTO constructNewCommentResponseDTO(Comment comment) {
         CommentResponseDTO commentResponseDTO = new CommentResponseDTO();
         commentResponseDTO.setId(comment.getId());
         commentResponseDTO.setLiteraryWorkPostId(comment.getLiteraryWorkPost().getId());
@@ -122,7 +118,7 @@ public class CommentService {
         commentResponseDTO.setComment(comment.getComment());
         commentResponseDTO.setUsername(comment.getUser().getUsername());
         return commentResponseDTO;
-    }
+    }*/
     //delete comment
     //get all commentsBy user sau LiteraryWork sau Quote sau Translation
 

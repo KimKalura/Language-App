@@ -13,7 +13,5 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByUsername(String username);
-
-    //List<User> findAllByRoleList(RoleType roleType);
-    //List<User> findAllBy(RoleType roleType);
+    List<User> findAllByRoleListContaining(Role role);
 }

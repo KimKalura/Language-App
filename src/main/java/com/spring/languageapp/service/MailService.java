@@ -53,8 +53,8 @@ public class MailService {
         helper.setFrom("raluca.deftu@yahoo.com");
         helper.setTo(recipientMail);
 
-        helper.setSubject("You have a translation suggestion for" + literaryWorkPost.getTitle());
-        helper.setText(literaryWorkPost.getUser().getUsername() + " wants to translate your literary work - " + literaryWorkPost.getTitle() + "Do you want do approve or deny?");
+        helper.setSubject("You have a suggestion for translation/romanization - " + literaryWorkPost.getTitle());
+        helper.setText(literaryWorkPost.getUser().getUsername() + " wants to translate your literary work - " + literaryWorkPost.getTitle() + ". " + "Do you want to approve or deny?");
         emailSender.send(message);
     }
 
@@ -69,7 +69,7 @@ public class MailService {
         helper.setTo(recipientMail);
 
         //helper.setSubject(quote.getUser().getUsername() + " saw your creation.");
-        helper.setText(quote.getUser().getUsername() + " wants to add a quote." + " < " + quote.getText() + " > " +  " You can approve or unapprove the adding.");
+        helper.setText(quote.getUser().getUsername() + " wants to add a quote." + " < " + quote.getText() + " >. " + " You can approve or unapprove the adding.");
         emailSender.send(message);
     }
 
@@ -88,6 +88,6 @@ public class MailService {
         emailSender.send(message);
     }
 
-    //refaccoriza- overloadinf 7:30
+    //refaccoriza- overloading 7:30
     //extract
 }
