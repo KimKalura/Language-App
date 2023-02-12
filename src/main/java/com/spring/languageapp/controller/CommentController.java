@@ -29,7 +29,6 @@ public class CommentController {
 
     @PostMapping("/create")
     public Comment addComment(@RequestBody CommentRequestDTO commentRequestDTO) throws JsonProcessingException, MessagingException {
-        //return status(HttpStatus.OK).body(commentService.addComment(commentRequestDTO));
         return commentService.addComment(commentRequestDTO);
     }
 

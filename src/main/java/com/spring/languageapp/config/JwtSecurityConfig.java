@@ -38,7 +38,6 @@ public class JwtSecurityConfig {
                 .antMatchers("/register").permitAll()
                 .antMatchers("/cinema/**").hasRole("ADMIN")
                 .antMatchers("/movie/**").hasRole("ADMIN")
-                .antMatchers("/quote/**").hasRole("ADMIN")
                 .antMatchers("/movie").hasRole("CLIENT")
                 .anyRequest().authenticated()
                 .and()

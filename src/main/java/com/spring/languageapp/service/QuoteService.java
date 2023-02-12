@@ -52,7 +52,6 @@ public class QuoteService {
         Role adminRole = roleRepository.findByRoleType(RoleType.ROLE_ADMIN);
 
         List<User> users = userRepository.findAll();
-        //admins.forEach(admin -> mailService.sendApproveForQuote_Admin(admin, quote));
         users.stream()
                 .filter(user -> user.getRoleList().contains(adminRole))
                 .forEach(admin -> {
@@ -61,7 +60,7 @@ public class QuoteService {
             } catch (MessagingException e) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "failed to send e-mails");
             }
-        });   //trimitem mail la toti cu cerere de approve quote
+        });
         return quoteRepository.save(quote);
     }
 

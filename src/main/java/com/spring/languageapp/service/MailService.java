@@ -1,9 +1,7 @@
 package com.spring.languageapp.service;
 
-import com.spring.languageapp.model.Comment;
 import com.spring.languageapp.model.LiteraryWorkPost;
 import com.spring.languageapp.model.Quote;
-import com.spring.languageapp.model.RoleType;
 import com.spring.languageapp.repository.LiteraryWorkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -88,6 +86,6 @@ public class MailService {
         emailSender.send(message);
     }
 
-    //refaccoriza- overloading 7:30
+    //refactorizare- overloading 7:30
     //extract
 }

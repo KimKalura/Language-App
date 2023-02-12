@@ -1,6 +1,5 @@
 package com.spring.languageapp.service;
 
-import com.spring.languageapp.dto.LikeDislikeRequestDTO;
 import com.spring.languageapp.dto.LiteraryWorkRequestDTO;
 import com.spring.languageapp.dto.LiteraryWorkResponseDTO;
 import com.spring.languageapp.dto.TranslationRomanizationRequestDTO;
@@ -90,7 +89,7 @@ public class LiteraryWorkService {
     }
 
     //adauga traducere/romanizare pentru o opera a unui user + mail
-    public TranslationRomanization addTranslationOrRomanizationForALwOfAUser(TranslationRomanizationRequestDTO translationRomanizationRequestDTO) throws MessagingException {//functioneaza,1-1 entitate-dto nu sunt sigura la dto, de aratat
+    public TranslationRomanization addTranslationOrRomanizationForALwOfAUser(TranslationRomanizationRequestDTO translationRomanizationRequestDTO) throws MessagingException {
         //gasim lw dupa id din DTO
         //si ii setam  traducere/trans: titlu, text,+idpostuluilw   id
         //aprobare --mail - testat functioneaza cu mail
@@ -185,25 +184,21 @@ public class LiteraryWorkService {
         //cine a facut postarea ca sa ii putem da notificare prin mail
         User postCreator = foundLiteraryWork.getUser();
 
-        foundLiteraryWork.setNumberOfLikes(foundLiteraryWork.getNumberOfLikes()+1);
+        foundLiteraryWork.setNumberOfLikes(foundLiteraryWork.getNumberOfLikes() + 1);
 
         //dau un mail folosindu-ma de numele lui likeUser catre postCreator
-        return literaryWorkRepository.save(foundLiteraryWork);
-    }
-
-    public LiteraryWorkPost update(Long literaryWorkId) {
-        LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(literaryWorkId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
         return literaryWorkRepository.save(foundLiteraryWork);
     }
 
     public LiteraryWorkPost findLiteraryWork(Long id) {
         return literaryWorkRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
     }
+
     public List<Long> getAllLiteraryWorkAndPhotos() {
         List<LiteraryWorkPost> allLiteraryWorks = literaryWorkRepository.findAll();
         List<PhotoPost> allPhotos = photoRepository.findAll();
         List<Long> allLiteraryWorksIds = allLiteraryWorks.stream().map(literaryWorkPost -> literaryWorkPost.getId()).collect(Collectors.toList());
-        List<Long> allPhotosIds= allPhotos.stream().map(photoPost ->  photoPost.getId()).collect(Collectors.toList());
+        List<Long> allPhotosIds = allPhotos.stream().map(photoPost -> photoPost.getId()).collect(Collectors.toList());
         List<Long> allPostsIds = new ArrayList<>();
 
         allPostsIds.addAll(allLiteraryWorksIds);

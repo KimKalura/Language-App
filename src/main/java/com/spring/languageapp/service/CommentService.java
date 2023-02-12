@@ -76,7 +76,6 @@ public class CommentService {
 
         if (commentRequestDTO.getLiteraryWorkPostId() != null) {
             LiteraryWorkPost foundLiteraryWork = literaryWorkService.findLiteraryWork(commentRequestDTO.getLiteraryWorkPostId());
-            //salvam comentariul
             foundLiteraryWork.getCommentList().add(comment);
             comment.setLiteraryWorkPost(foundLiteraryWork);
         } else if (commentRequestDTO.getQuoteId() != null) {
@@ -95,31 +94,13 @@ public class CommentService {
 
 
     public String getResponseBodyJson(String requestBaseUrl, String wordsToCheck) throws JsonProcessingException {
-        URI url = new UriTemplate(requestBaseUrl).expand(wordsToCheck);//apiKey
-        //ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-        //ObjectMapper objectMapper = new ObjectMapper();
+        URI url = new UriTemplate(requestBaseUrl).expand(wordsToCheck);
         return makeAPICall(url);
     }
 
     private String makeAPICall(URI url) throws JsonProcessingException {
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-        //ObjectMapper objectMapper = new ObjectMapper();
-        //return objectMapper.readTree(response.getBody());
         return response.getBody();
     }
-
-    /*public CommentResponseDTO constructNewCommentResponseDTO(Comment comment) {
-        CommentResponseDTO commentResponseDTO = new CommentResponseDTO();
-        commentResponseDTO.setId(comment.getId());
-        commentResponseDTO.setLiteraryWorkPostId(comment.getLiteraryWorkPost().getId());
-        commentResponseDTO.setPhotoId(comment.getPhoto().getId());
-        commentResponseDTO.setQuoteId(comment.getQuote().getId());
-        commentResponseDTO.setCreatedDate(comment.getCreatedDate());
-        commentResponseDTO.setComment(comment.getComment());
-        commentResponseDTO.setUsername(comment.getUser().getUsername());
-        return commentResponseDTO;
-    }*/
-    //delete comment
-    //get all commentsBy user sau LiteraryWork sau Quote sau Translation
 
 }

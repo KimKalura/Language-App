@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 public class RegisterDTO {
 
@@ -29,10 +30,10 @@ public class RegisterDTO {
     private String practicedLanguage;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String dateOfBirth;
+    private LocalDateTime dateOfBirth;
 
 
-    public RegisterDTO(String username, String password, String email, String country, String nationality, String nativeLanguage, String practicedLanguage, String dateOfBirth) {
+    public RegisterDTO(String username, String password, String email, String country, String nationality, String nativeLanguage, String practicedLanguage, LocalDateTime dateOfBirth) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -99,11 +100,11 @@ public class RegisterDTO {
         this.practicedLanguage = practicedLanguage;
     }
 
-    public String getDateOfBirth() {
+    public LocalDateTime getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(LocalDateTime dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 }

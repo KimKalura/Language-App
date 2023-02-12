@@ -25,7 +25,7 @@ import java.util.Map;
 public class AuthController {
 
     @Autowired
-    private JwtTokenService jwtTokenService; //genereaza token-ul
+    private JwtTokenService jwtTokenService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
