@@ -32,7 +32,7 @@ public class FavoriteLiteraryWorkController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteSubreddit(@PathVariable Long id){
+    public void deleteFromFavoriteList(@PathVariable Long id){
         favoriteLiteraryWorkService.deleteFromFavoriteList(id);
     }
 }

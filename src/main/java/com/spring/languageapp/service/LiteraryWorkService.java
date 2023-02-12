@@ -153,8 +153,6 @@ public class LiteraryWorkService {
     }
 
     public boolean isTranslated(LiteraryWorkPost literaryWorkPost, LanguageType language) {
-        //verific daca limba orig sau limba trad(daca exista traducere) este aceeasi cu limba care vine parametru
-        //daca nu este exceptie
         List<LanguageType> translationLanguages = literaryWorkPost.getTranslationRomanizationList().stream()
                 .map(translationRomanization -> translationRomanization.getLanguage()).collect(Collectors.toList());
         if (literaryWorkPost.getOriginalLanguage().equals(language) || translationLanguages.contains(language)) {
@@ -183,9 +181,9 @@ public class LiteraryWorkService {
         User likeUser = userService.findLoggedInUser();
         //cine a facut postarea ca sa ii putem da notificare prin mail
         User postCreator = foundLiteraryWork.getUser();
-
-        foundLiteraryWork.setNumberOfLikes(foundLiteraryWork.getNumberOfLikes() + 1);
-
+        if(foundLiteraryWork != null){
+            foundLiteraryWork.setNumberOfLikes(foundLiteraryWork.getNumberOfLikes() + 1);
+        }
         //dau un mail folosindu-ma de numele lui likeUser catre postCreator
         return literaryWorkRepository.save(foundLiteraryWork);
     }

@@ -36,17 +36,10 @@ public class FavoriteLiteraryWorkService {
         this.literaryWorkRepository = literaryWorkRepository;
     }
 
-    //adaug la favorite o opera sau o poza
-    //autorul poeziei, de exemplu, va primi o notificare pe mail ca poezia lui a fost adaugata la favorite de catre cele care a adaugat-o
     public FavoriteUserLiteraryWorkPost addLiteraryWorkToFavoriteList(FavoriteLiteraryWorkRequestDTO favoriteLiteraryWorkRequestDTO) throws MessagingException {
         LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(favoriteLiteraryWorkRequestDTO.getLiteraryWorkPostId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User foundUser = userRepository.findUserByUsername(userDetails.getUsername()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
-
-        // User foundUser = userRepository.findById(favoriteLiteraryWorkDTO.getUserId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
-        //List<FavoriteLiteraryWorkList> foundFavoriteLiteraryWork =  favoriteLiteraryWorkListRepository.findAllByUser(foundUser);
-        //** List<FavoriteLiteraryWorkList> favoriteLiteraryWorkList = foundUser.getFavoriteLiteraryWorkList();
-        //foundFavLW.setUser(foundUser);
 
         FavoriteUserLiteraryWorkPost favoriteLiteraryWork = new FavoriteUserLiteraryWorkPost();
         favoriteLiteraryWork.setLiteraryWorkPost(foundLiteraryWork);
@@ -58,8 +51,7 @@ public class FavoriteLiteraryWorkService {
         return favoriteLiteraryWorkListRepository.save(favoriteLiteraryWork);
     }
 
-    //metoda pt a vedea toata lista de Favorite adaugata (prose + poetry)
-    public List<LiteraryWorkPost> getAllFavoriteLiteraryWorkByUser(Long userId) {  //vezi postman
+    public List<LiteraryWorkPost> getAllFavoriteLiteraryWorkByUser(Long userId) {
         User foundUser = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
         List<FavoriteUserLiteraryWorkPost> favoriteUserLiteraryWorkPosts = favoriteLiteraryWorkListRepository.findAllByUserOrderByLiteraryWorkPost(foundUser);
         return favoriteUserLiteraryWorkPosts.stream().map(favoriteUserLiteraryWorkPost -> favoriteUserLiteraryWorkPost.getLiteraryWorkPost()).collect(Collectors.toList());

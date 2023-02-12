@@ -78,17 +78,19 @@ public class CommentService {
             LiteraryWorkPost foundLiteraryWork = literaryWorkService.findLiteraryWork(commentRequestDTO.getLiteraryWorkPostId());
             foundLiteraryWork.getCommentList().add(comment);
             comment.setLiteraryWorkPost(foundLiteraryWork);
-        } else if (commentRequestDTO.getQuoteId() != null) {
+        }
+         else if (commentRequestDTO.getQuoteId() != null) {
             Quote foundQuote = quoteService.findQuote(commentRequestDTO.getQuoteId());
             foundQuote.getCommentList().add(comment);
             comment.setQuote(foundQuote);
-        } else if (commentRequestDTO.getPhotoId() != null) {
+        }
+         else if (commentRequestDTO.getPhotoId() != null) {
             PhotoPost foundPhotoPost = photoService.findPhoto(commentRequestDTO.getPhotoId());
             foundPhotoPost.getCommentList().add(comment);
             comment.setPhoto(foundPhotoPost);
         }
 
-        //mailService.sendCommentMessage(foundUser.getEmail(), comment);
+        //mailService.sendCommentMessage(userService.findLoggedInUser(), comment.getComment(), literaryWorkService.findLiteraryWork(commentRequestDTO.getLiteraryWorkPostId()) );
         return commentRepository.save(comment);
     }
 
@@ -103,4 +105,8 @@ public class CommentService {
         return response.getBody();
     }
 
+    public void deleteComment(Long commentId) {
+        Comment foundComment = commentRepository.findById(commentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "comment was not found"));
+        commentRepository.delete(foundComment);
+    }
 }

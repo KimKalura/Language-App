@@ -2,6 +2,7 @@ package com.spring.languageapp.service;
 
 import com.spring.languageapp.model.LiteraryWorkPost;
 import com.spring.languageapp.model.Quote;
+import com.spring.languageapp.model.User;
 import com.spring.languageapp.repository.LiteraryWorkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -27,17 +28,17 @@ public class MailService {
     }
 
     // pt COMENTARIU
-    public void sendCommentMessage(String recipientMail, String comment, Long literaryWorkPostId) throws MessagingException {
+    public void sendCommentMessage(User loggedInUser, String comment, LiteraryWorkPost literaryWorkPost) throws MessagingException {
 
         MimeMessage message = emailSender.createMimeMessage();
 
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setFrom("raluca.deftu@yahoo.com");
-        helper.setTo(recipientMail);
+        helper.setTo(String.valueOf(loggedInUser));
 
         helper.setSubject("You have a comment from " + userService.findLoggedInUser().getUsername());
-        helper.setText("Your post: " + literaryWorkRepository.findById(literaryWorkPostId) + " has a new comment: " + comment);
+        helper.setText("Your post: " + literaryWorkPost.getTitle() + " has a new comment: " + comment);
         emailSender.send(message);
     }
 
