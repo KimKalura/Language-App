@@ -8,15 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "photoData")
-public class PhotoPost {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "category_seq")
-    @SequenceGenerator(name = "category_seq",
-            sequenceName = "category_seq",
-            initialValue = 1,
-            allocationSize = 1)
-    private Long id;
+public class PhotoPost extends  Post{
 
     private String name;
     private String type;
@@ -29,12 +21,9 @@ public class PhotoPost {
     @Column
     private Integer numberOfLikes;
 
-
     @Column
     private Integer numberOfDislikes;
 
-    //locatie googleMap
-    //created date
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference(value = "user-photo")
@@ -53,7 +42,7 @@ public class PhotoPost {
     }
 
     public PhotoPost(Long id, String name, String type, String description, byte[] photoData, Integer numberOfLikes, Integer numberOfDislikes, User user, List<Comment> commentList, List<FavoritePhotoList> favoritePhotoList) {
-        this.id = id;
+       super(id);
         this.name = name;
         this.type = type;
         this.description = description;
@@ -65,13 +54,7 @@ public class PhotoPost {
         this.favoritePhotoList = favoritePhotoList;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

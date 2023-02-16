@@ -9,15 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class LiteraryWorkPost {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_seq")
-    @SequenceGenerator(name = "category_seq",
-            sequenceName = "category_seq",
-            initialValue = 1,
-            allocationSize = 1)
-    private Long id;
+public class LiteraryWorkPost extends Post{
 
     @Column
     private LiteraryWorkType literaryWorkType;
@@ -39,8 +31,6 @@ public class LiteraryWorkPost {
     @Column
     private Integer numberOfDislikes;
 
-
-    //private Boolean isApproved;
 
     @OneToMany(mappedBy = "literaryWorkPost", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "literaryWorkPost-translationRomanization")
@@ -64,7 +54,7 @@ public class LiteraryWorkPost {
     public LiteraryWorkPost(){}
 
     public LiteraryWorkPost(Long id, LiteraryWorkType literaryWorkType, LanguageType originalLanguage, LocalDateTime createdDate, String title, String text, Integer numberOfLikes, Integer numberOfDislikes, List<TranslationRomanization> translationRomanizationList, User user, List<Comment> commentList, List<FavoriteUserLiteraryWorkPost> favoriteUserLiteraryWorkPost) {
-        this.id = id;
+        super(id);
         this.literaryWorkType = literaryWorkType;
         this.originalLanguage = originalLanguage;
         this.createdDate = createdDate;
@@ -78,13 +68,6 @@ public class LiteraryWorkPost {
         this.favoriteUserLiteraryWorkPost = favoriteUserLiteraryWorkPost;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public LiteraryWorkType getLiteraryWorkType() {
         return literaryWorkType;

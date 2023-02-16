@@ -24,17 +24,15 @@ public class LiteraryWorkService {
     private UserService userService;
     private UserRepository userRepository;
     private TranslationRomanizationRepository translationRomanizationRepository;
-    private FavoriteLiteraryWorkListRepository favoriteLiteraryWorkListRepository;
     private MailService mailService;
     private PhotoRepository photoRepository;
 
     @Autowired
-    public LiteraryWorkService(LiteraryWorkRepository literaryWorkRepository, UserService userService, UserRepository userRepository, TranslationRomanizationRepository translationRomanizationRepository, FavoriteLiteraryWorkListRepository favoriteLiteraryWorkListRepository, MailService mailService, PhotoRepository photoRepository) {
+    public LiteraryWorkService(LiteraryWorkRepository literaryWorkRepository, UserService userService, UserRepository userRepository, TranslationRomanizationRepository translationRomanizationRepository, MailService mailService, PhotoRepository photoRepository) {
         this.literaryWorkRepository = literaryWorkRepository;
         this.userService = userService;
         this.userRepository = userRepository;
         this.translationRomanizationRepository = translationRomanizationRepository;
-        this.favoriteLiteraryWorkListRepository = favoriteLiteraryWorkListRepository;
         this.mailService = mailService;
         this.photoRepository = photoRepository;
     }
@@ -48,14 +46,13 @@ public class LiteraryWorkService {
         } else if (literaryWorkRequestDTO.getLiteraryWorkType().equals(LiteraryWorkType.POETRY) && literaryWorkRequestDTO.getText().equals(maxWordsForPoem(literaryWorkRequestDTO.getText(), 250))) {
             literaryWorkRepository.save(literaryWorkPost);
         } else {
-            throw new ResponseStatusException((HttpStatus.NO_CONTENT), "You reach the maxim words for your literary work or you did not chose the type of your literary work!");
+            throw new ResponseStatusException((HttpStatus.NO_CONTENT), "You reached the maxim words for your literary work or you did not chose the type of your literary work!");
         }
         literaryWorkPost.setLiteraryWorkType(literaryWorkRequestDTO.getLiteraryWorkType());
         literaryWorkPost.setOriginalLanguage(LanguageType.valueOf(literaryWorkRequestDTO.getOriginalLanguage()));
         literaryWorkPost.setTitle(literaryWorkRequestDTO.getTitle());
         literaryWorkPost.setCreatedDate(LocalDateTime.now());
         literaryWorkPost.setText(literaryWorkRequestDTO.getText());
-
         addTranslationOrRomanization(literaryWorkRequestDTO, literaryWorkPost);
         literaryWorkPost.setUser(userService.findLoggedInUser());
         return literaryWorkRepository.save(literaryWorkPost);
@@ -88,12 +85,7 @@ public class LiteraryWorkService {
         }
     }
 
-    //adauga traducere/romanizare pentru o opera a unui user + mail
     public TranslationRomanization addTranslationOrRomanizationForALwOfAUser(TranslationRomanizationRequestDTO translationRomanizationRequestDTO) throws MessagingException {
-        //gasim lw dupa id din DTO
-        //si ii setam  traducere/trans: titlu, text,+idpostuluilw   id
-        //aprobare --mail - testat functioneaza cu mail
-        //adaugam si partea de update?-nu
         LiteraryWorkPost literaryWorkPost = literaryWorkRepository.findById(translationRomanizationRequestDTO.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User foundUser = userRepository.findUserByUsername(userDetails.getUsername()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
@@ -104,10 +96,8 @@ public class LiteraryWorkService {
         translationRomanization.setTranslatedText(translationRomanizationRequestDTO.getTranslatedText());
         translationRomanization.setRomanizationText(translationRomanizationRequestDTO.getRomanizationText());
         translationRomanization.setCreatedDate(LocalDateTime.now());
-
         literaryWorkPost.getTranslationRomanizationList().add(translationRomanization);
         translationRomanization.setLiteraryWorkPost(literaryWorkPost);
-
         mailService.sendApproveMessageForTranslation(foundUser.getEmail(), literaryWorkPost);
         return translationRomanizationRepository.save(translationRomanization);
     }
@@ -127,18 +117,13 @@ public class LiteraryWorkService {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "translation for this language does not exist");
         }
         List<LiteraryWorkPost> allLiteraryWorks = literaryWorkRepository.findAllByTitleAndLiteraryWorkType(foundProse.getTitle(), LiteraryWorkType.PROSE);
-
         List<Long> allProsePartsIds = getOtherProsePartsIdsByLanguage(language, foundProse, allLiteraryWorks);
-
         LiteraryWorkResponseDTO literaryWorkResponseDTO = new LiteraryWorkResponseDTO();
         literaryWorkResponseDTO.setOriginalLanguage(foundProse.getOriginalLanguage());
         literaryWorkResponseDTO.setCreatedDate(foundProse.getCreatedDate());
         literaryWorkResponseDTO.setTitle(foundProse.getTitle());
         literaryWorkResponseDTO.setText(foundProse.getText());
-        //literaryWorkResponseDTO.setTranslatedLanguage(LanguageType.valueOf(literaryWorkRequestDTO.getTranslatedLanguage()));
-        //literaryWorkResponseDTO.setRomanizationText(literaryWorkRequestDTO.getRomanizationText());
         literaryWorkResponseDTO.setOtherProsePartsIds(allProsePartsIds);
-
         return literaryWorkResponseDTO;
     }
 
@@ -157,9 +142,8 @@ public class LiteraryWorkService {
                 .map(translationRomanization -> translationRomanization.getLanguage()).collect(Collectors.toList());
         if (literaryWorkPost.getOriginalLanguage().equals(language) || translationLanguages.contains(language)) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public List<LiteraryWorkPost> getAllProseAndPoetry() {
@@ -175,16 +159,11 @@ public class LiteraryWorkService {
         literaryWorkRepository.delete(foundLiteraryWork);
     }
 
-    public LiteraryWorkPost addLikeDislikeForALiteraryWork(Long literaryWorkId) {
+    public LiteraryWorkPost addLike(Long literaryWorkId) {
         LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(literaryWorkId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
-        //User foundUser = userService.findLoggedInUser();
-        User likeUser = userService.findLoggedInUser();
-        //cine a facut postarea ca sa ii putem da notificare prin mail
-        User postCreator = foundLiteraryWork.getUser();
-        if(foundLiteraryWork != null){
-            foundLiteraryWork.setNumberOfLikes(foundLiteraryWork.getNumberOfLikes() + 1);
-        }
-        //dau un mail folosindu-ma de numele lui likeUser catre postCreator
+        // User likeUser = userService.findLoggedInUser();
+        // User postCreator = foundLiteraryWork.getUser();
+        foundLiteraryWork.setNumberOfLikes(foundLiteraryWork.getNumberOfLikes() + 1);
         return literaryWorkRepository.save(foundLiteraryWork);
     }
 
@@ -198,10 +177,8 @@ public class LiteraryWorkService {
         List<Long> allLiteraryWorksIds = allLiteraryWorks.stream().map(literaryWorkPost -> literaryWorkPost.getId()).collect(Collectors.toList());
         List<Long> allPhotosIds = allPhotos.stream().map(photoPost -> photoPost.getId()).collect(Collectors.toList());
         List<Long> allPostsIds = new ArrayList<>();
-
         allPostsIds.addAll(allLiteraryWorksIds);
         allPostsIds.addAll(allPhotosIds);
-
         return allPostsIds;
     }
 }

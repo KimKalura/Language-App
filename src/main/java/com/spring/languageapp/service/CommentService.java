@@ -33,9 +33,6 @@ public class CommentService {
 
     private MailService mailService;
 
-    /*@Value("${api.   .key}")
-    private String apiKey;*/
-
     private RestTemplate restTemplate;
     private PhotoRepository photoRepository;
     private LiteraryWorkRepository literaryWorkRepository;
@@ -45,7 +42,6 @@ public class CommentService {
 
     private static final String CONTAINS_PROFANITY_TEXT_URL = "https://www.purgomalum.com/service/containsprofanity?text={wordsToCheck}";
 
-    //http://api1-eu.webpurify.com/services/rest/
 
     @Autowired
 
@@ -66,7 +62,7 @@ public class CommentService {
     public Comment addComment(CommentRequestDTO commentRequestDTO) throws JsonProcessingException, MessagingException {
         String response = getResponseBodyJson(CONTAINS_PROFANITY_TEXT_URL, commentRequestDTO.getComment());
         if (Boolean.parseBoolean(response)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "the comment contains profanity words");
+            throw new ResponseStatusException(HttpStatus.LOCKED, "the comment contains profanity words");
         }
 
         Comment comment = new Comment();
@@ -74,26 +70,29 @@ public class CommentService {
         comment.setCreatedDate(LocalDateTime.now());
         comment.setUser(userService.findLoggedInUser());
 
+        User postCreator = new User();
+
         if (commentRequestDTO.getLiteraryWorkPostId() != null) {
             LiteraryWorkPost foundLiteraryWork = literaryWorkService.findLiteraryWork(commentRequestDTO.getLiteraryWorkPostId());
             foundLiteraryWork.getCommentList().add(comment);
             comment.setLiteraryWorkPost(foundLiteraryWork);
-        }
-         else if (commentRequestDTO.getQuoteId() != null) {
+            postCreator = foundLiteraryWork.getUser();
+            mailService.sendCommentMessage(userService.findLoggedInUser(), postCreator,  comment.getComment(), foundLiteraryWork );
+        } else if (commentRequestDTO.getQuoteId() != null) {
             Quote foundQuote = quoteService.findQuote(commentRequestDTO.getQuoteId());
             foundQuote.getCommentList().add(comment);
             comment.setQuote(foundQuote);
-        }
-         else if (commentRequestDTO.getPhotoId() != null) {
+            postCreator = foundQuote.getUser();
+            mailService.sendCommentMessage(userService.findLoggedInUser(), postCreator,  comment.getComment(), foundQuote );
+        } else if (commentRequestDTO.getPhotoId() != null) {
             PhotoPost foundPhotoPost = photoService.findPhoto(commentRequestDTO.getPhotoId());
             foundPhotoPost.getCommentList().add(comment);
             comment.setPhoto(foundPhotoPost);
+            postCreator = foundPhotoPost.getUser();
+            mailService.sendCommentMessage(userService.findLoggedInUser(), postCreator,  comment.getComment(), foundPhotoPost );
         }
-
-        //mailService.sendCommentMessage(userService.findLoggedInUser(), comment.getComment(), literaryWorkService.findLiteraryWork(commentRequestDTO.getLiteraryWorkPostId()) );
         return commentRepository.save(comment);
     }
-
 
     public String getResponseBodyJson(String requestBaseUrl, String wordsToCheck) throws JsonProcessingException {
         URI url = new UriTemplate(requestBaseUrl).expand(wordsToCheck);

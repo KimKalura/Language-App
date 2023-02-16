@@ -47,16 +47,17 @@ public class AuthController {
         return jwtTokenService.generateToken(userDetails);
     }
 
-    //    @PostMapping("/register")
+//    @PostMapping("/register")
 //    public User register(@RequestBody RegisterDTO newUser) {
 //        return userService.register(newUser);
 //    }
+
     @PostMapping("/register")
     public User register(@Valid @RequestBody RegisterDTO newUser) {
         return userService.register(newUser);
     }
 
-    //*
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {

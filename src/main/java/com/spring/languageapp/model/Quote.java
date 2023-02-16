@@ -7,15 +7,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Quote {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_seq")
-    @SequenceGenerator(name = "category_seq",
-            sequenceName = "category_seq",
-            initialValue = 1,
-            allocationSize = 1)
-    private Long id;
+public class Quote extends Post{
 
     @Column
     private String text;
@@ -43,7 +35,7 @@ public class Quote {
     public Quote(){}
 
     public Quote(Long id, String text, Integer numberOfLikes, Integer numberOfDislikes, Boolean isApproved, User user, List<Comment> commentList) {
-        this.id = id;
+        super(id);
         this.text = text;
         this.numberOfLikes = numberOfLikes;
         this.numberOfDislikes = numberOfDislikes;
@@ -52,13 +44,7 @@ public class Quote {
         this.commentList = commentList;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getText() {
         return text;

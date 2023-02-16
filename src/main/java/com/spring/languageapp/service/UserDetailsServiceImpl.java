@@ -43,7 +43,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 //        return authorities;
         return user.getRoleList().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleType().name())).toList();
-
     }
-
 }

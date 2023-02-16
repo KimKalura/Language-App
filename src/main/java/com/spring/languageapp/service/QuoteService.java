@@ -66,7 +66,7 @@ public class QuoteService {
 
 
     public Quote approveQuote(Long quoteId){
-        Quote foundQuote = quoteRepository.findById(quoteId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "quote not found"));
+        Quote foundQuote = quoteRepository.findById(quoteId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "quote was not found"));
         foundQuote.setApproved(true);
         return quoteRepository.save(foundQuote);
     }

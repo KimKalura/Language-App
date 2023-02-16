@@ -45,9 +45,7 @@ public class FavoriteLiteraryWorkService {
         favoriteLiteraryWork.setLiteraryWorkPost(foundLiteraryWork);
         favoriteLiteraryWork.setUser(foundUser);
         favoriteLiteraryWork.setSavedDate(foundLiteraryWork.getCreatedDate());
-
         mailService.sendMessegeForFavoriteAddedLiteraryWork(foundUser.getEmail(), foundLiteraryWork);
-
         return favoriteLiteraryWorkListRepository.save(favoriteLiteraryWork);
     }
 

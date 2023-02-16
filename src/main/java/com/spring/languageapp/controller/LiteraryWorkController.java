@@ -56,9 +56,9 @@ public class LiteraryWorkController {
         literaryWorkService.deleteLiteraryWork(id);
     }
 
-    @PostMapping("/{literaryWorkId}")
-    public LiteraryWorkPost addLikeDislikeForALiteraryWork(@PathVariable Long literaryWorkId){
-        return literaryWorkService.addLikeDislikeForALiteraryWork(literaryWorkId);
+    @PostMapping("/like/{literaryWorkId}")
+    public LiteraryWorkPost addLike(@PathVariable Long literaryWorkId){
+         return literaryWorkService.addLike(literaryWorkId);
     }
 
     @GetMapping("/feed")

@@ -1,6 +1,7 @@
 package com.spring.languageapp.service;
 
 import com.spring.languageapp.model.LiteraryWorkPost;
+import com.spring.languageapp.model.Post;
 import com.spring.languageapp.model.Quote;
 import com.spring.languageapp.model.User;
 import com.spring.languageapp.repository.LiteraryWorkRepository;
@@ -27,66 +28,40 @@ public class MailService {
         this.literaryWorkRepository = literaryWorkRepository;
     }
 
-    // pt COMENTARIU
-    public void sendCommentMessage(User loggedInUser, String comment, LiteraryWorkPost literaryWorkPost) throws MessagingException {
 
-        MimeMessage message = emailSender.createMimeMessage();
-
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-        helper.setFrom("raluca.deftu@yahoo.com");
-        helper.setTo(String.valueOf(loggedInUser));
-
-        helper.setSubject("You have a comment from " + userService.findLoggedInUser().getUsername());
-        helper.setText("Your post: " + literaryWorkPost.getTitle() + " has a new comment: " + comment);
-        emailSender.send(message);
+    public void sendCommentMessage(User loggedInUser, User postCreator, String comment, Post post) throws MessagingException {
+        MimeMessageHelper helper = prepareMail(String.valueOf(postCreator));
+        helper.setSubject("You have a comment from " + loggedInUser.getUsername());
+        helper.setText("Your post: " + post.getId() + " has a new comment: " + comment);
+        emailSender.send(helper.getMimeMessage());
     }
 
-    //pt aprobare TRADUCERE/TRANSLATARE
     public void sendApproveMessageForTranslation(String recipientMail, LiteraryWorkPost literaryWorkPost) throws MessagingException {
-
-        MimeMessage message = emailSender.createMimeMessage();
-
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-        helper.setFrom("raluca.deftu@yahoo.com");
-        helper.setTo(recipientMail);
-
+        MimeMessageHelper helper = prepareMail(recipientMail);
         helper.setSubject("You have a suggestion for translation/romanization - " + literaryWorkPost.getTitle());
         helper.setText(literaryWorkPost.getUser().getUsername() + " wants to translate your literary work - " + literaryWorkPost.getTitle() + ". " + "Do you want to approve or deny?");
-        emailSender.send(message);
+        emailSender.send(helper.getMimeMessage());
     }
 
-    //aprobare pt QUOTE
     public void sendApproveForQuote_Admin(String recipientMail, Quote quote) throws MessagingException {
-
-        MimeMessage message = emailSender.createMimeMessage();
-
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-        helper.setFrom("raluca.deftu@yahoo.com");
-        helper.setTo(recipientMail);
-
-        //helper.setSubject(quote.getUser().getUsername() + " saw your creation.");
+        MimeMessageHelper helper = prepareMail(recipientMail);
+        helper.setSubject(quote.getUser().getUsername() + " saw your creation.");
         helper.setText(quote.getUser().getUsername() + " wants to add a quote." + " < " + quote.getText() + " >. " + " You can approve or unapprove the adding.");
-        emailSender.send(message);
+        emailSender.send(helper.getMimeMessage());
     }
 
-    // de trimis mail pt adaugare la favorite a unei opere/poze de la un user
     public void sendMessegeForFavoriteAddedLiteraryWork(String recipientMail, LiteraryWorkPost literaryWorkPost) throws MessagingException {
-
-        MimeMessage message = emailSender.createMimeMessage();
-
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-        helper.setFrom("raluca.deftu@yahoo.com");
-        helper.setTo(recipientMail);
-
+        MimeMessageHelper helper = prepareMail(recipientMail);
         helper.setSubject("< " + literaryWorkPost.getTitle() + " >" + " was added in Favorite List");
         helper.setText(literaryWorkPost.getUser().getUsername() + " added your creation " + "< " + literaryWorkPost.getTitle() + " >" + " in Favorite List.");
-        emailSender.send(message);
+        emailSender.send(helper.getMimeMessage());
     }
 
-    //refactorizare- overloading 7:30
-    //extract
+    public MimeMessageHelper prepareMail(String to) throws MessagingException {
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setFrom("raluca.deftu@yahoo.com");
+        helper.setTo(to);
+        return helper;
+    }
 }
