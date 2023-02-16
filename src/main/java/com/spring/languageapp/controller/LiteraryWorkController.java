@@ -27,8 +27,8 @@ public class LiteraryWorkController {
     }
 
     @PostMapping("/addtranslation")
-    public TranslationRomanization addTranslationOrRomanizationForALwOfAUser(@RequestBody TranslationRomanizationRequestDTO translationRomanizationRequestDTO) throws MessagingException {
-        return literaryWorkService.addTranslationOrRomanizationForALwOfAUser(translationRomanizationRequestDTO);
+    public TranslationRomanization addTranslationForALiteraryworkOfAUser(@RequestBody TranslationRomanizationRequestDTO translationRomanizationRequestDTO) throws MessagingException {
+        return literaryWorkService.addTranslationForALiteraryworkOfAUser(translationRomanizationRequestDTO);
     }
 
     @GetMapping("/allProse")

@@ -85,7 +85,7 @@ public class LiteraryWorkService {
         }
     }
 
-    public TranslationRomanization addTranslationOrRomanizationForALwOfAUser(TranslationRomanizationRequestDTO translationRomanizationRequestDTO) throws MessagingException {
+    public TranslationRomanization addTranslationForALiteraryworkOfAUser(TranslationRomanizationRequestDTO translationRomanizationRequestDTO) throws MessagingException {
         LiteraryWorkPost literaryWorkPost = literaryWorkRepository.findById(translationRomanizationRequestDTO.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User foundUser = userRepository.findUserByUsername(userDetails.getUsername()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
