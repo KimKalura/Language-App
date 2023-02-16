@@ -61,10 +61,6 @@ public class LiteraryWorkController {
          return literaryWorkService.addLike(literaryWorkId);
     }
 
-    @GetMapping("/feed")
-    public List<Long> getAllLiteraryWorkAndPhotos() {
-        return literaryWorkService.getAllLiteraryWorkAndPhotos();
-    }
 }
 
 

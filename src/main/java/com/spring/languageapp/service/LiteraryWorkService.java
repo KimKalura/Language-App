@@ -171,14 +171,4 @@ public class LiteraryWorkService {
         return literaryWorkRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
     }
 
-    public List<Long> getAllLiteraryWorkAndPhotos() {
-        List<LiteraryWorkPost> allLiteraryWorks = literaryWorkRepository.findAll();
-        List<PhotoPost> allPhotos = photoRepository.findAll();
-        List<Long> allLiteraryWorksIds = allLiteraryWorks.stream().map(literaryWorkPost -> literaryWorkPost.getId()).collect(Collectors.toList());
-        List<Long> allPhotosIds = allPhotos.stream().map(photoPost -> photoPost.getId()).collect(Collectors.toList());
-        List<Long> allPostsIds = new ArrayList<>();
-        allPostsIds.addAll(allLiteraryWorksIds);
-        allPostsIds.addAll(allPhotosIds);
-        return allPostsIds;
-    }
 }
