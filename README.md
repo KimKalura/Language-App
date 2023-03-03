@@ -60,7 +60,7 @@ You can view the demo here:
 #### Add a literary work
 
 ```http
-  Post /literaryWork/add
+  POST /literaryWork/add
 ```
 
 | Parameter | Type     | Description                |
@@ -71,7 +71,7 @@ Request body example:
 
 ```json
  {
-    "literaryWorkType":"POETRY",
+    "literaryWorkType":"enum",
     "originalLanguage": "string",
     "title":"string",
     "text":"string",
@@ -88,7 +88,7 @@ Postman example:
 #### Add translation or romanization for a text
 
 ```http
-  Post /literaryWork/addtranslation
+  POST /literaryWork/addtranslation
 ```
 
 | Parameter | Type     | Description                |
@@ -107,22 +107,26 @@ Request body example:
   }
 ```
 
-#### Get all prose
+Postman example:
+![App Screenshot](https://i.imgur.com/845MgVM.png)
+
+
+#### View all prose
 
 ```http
-  Get /literaryWork/allProse
+  GET /literaryWork/allProse
 ```
 
-#### Get all poetry
+#### View all poetry
 
 ```http
-  Get /literaryWork/allPoetry
+  GET /literaryWork/allPoetry
 ```
 
-#### Get a prose by language
+#### View a prose by language
 
 ```http
-  Get /literaryWork/${id}/{language}
+  GET /literaryWork/${id}/{language}
 ```
 
 | Parameter | Type     | Description                |
@@ -132,7 +136,7 @@ Request body example:
 #### Delete a literary work
 
 ```http
-  Delete /literaryWork/${id}
+  DELETE /literaryWork/${id}
 ```
 
 | Parameter | Type     | Description                       |
@@ -142,17 +146,18 @@ Request body example:
 #### Add like
 
 ```http
-  Post /literaryWork/like/${literaryWorkId}
+  POST /literaryWork/like/${literaryWorkId}
 ```
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
 | `id`      | `string` | **Required**. Id of literary work to add like |
 
+
 #### Add literary work to favorite list
 
 ```http
-  Post /favoriteLiteraryWork/add
+  POST /favoriteLiteraryWork/add
 ```
 
 | Parameter | Type     | Description                |
@@ -168,10 +173,10 @@ Request body example:
   }
 ```
 
-#### Get all favorite literary work by user
+#### View all favorite literary work by user
 
 ```http
-  Get /favoriteLiteraryWork/${userId}
+  GET /favoriteLiteraryWork/${userId}
 ```
 
 | Parameter | Type     | Description                       |
@@ -179,10 +184,28 @@ Request body example:
 | `id`      | `string` | **Required**. Id of user to fetch |
 
 
+#### Add quote
+
+```http
+  POST /quote/add/${userId}
+```
+| Parameter | Type     | Description                                       |
+|:----------|:---------|:--------------------------------------------------|
+| `id`      | `string` | **Required**. Id of user to fetch                 |
+| `body`    | `json`   | **Required**. The properties of quote to be added |
+
+Request body example:
+
+```json
+{
+  "text": "string"
+}
+```
+
 #### Add comment
 
 ```http
-  Post /comment/create
+  POST /comment/create
 ```
 
 | Parameter | Type     | Description                |
@@ -200,15 +223,35 @@ Request body example:
 }
 ```
 
+#### Delete comment
+
+```http
+  DELETE /comment/delete/${commentId}
+```
+
 #### Approve a quote
 
 ```http
-  Get /quote/${quoteId}
+  GET /quote/${quoteId}
 ```
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
 | `id`      | `string` | **Required**. Id of quote to fetch |
+
+
+#### View all approved quotes
+
+```http
+  GET /quote/getAllApprovedQuotes
+```
+
+
+#### View all unapproved quotes
+
+```http
+  GET /quote/getAllUnapprovedQuotes
+```
 
 
 
@@ -259,6 +302,9 @@ Request body example:
   "username": "string"
 }
 ``` 
+
+![App Screenshot](https://i.imgur.com/2LxovtI.png)
+
 After running the authenticate request, the client will obtain an access token that will be used in all subsequent request in order to authenticate the user and to authorize the user based on its role.
 
 This is an example of what should be included in the request header:
@@ -266,6 +312,7 @@ This is an example of what should be included in the request header:
 ```http
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiZXhwIjoxNjcxMTQzMzEyfQ.dxIzsD9Bm8y_kw3MOoZ2JXIKOg--uZaA5XNtBLdGYc4Ps3nlzBFDwBJi0bEeHlCggonZ6nQ2zwCI0D5a7dXjmw
 ```  
+
 ## Prerequisites
 
 For building and running the application you need:
@@ -279,6 +326,7 @@ For deploying on Heroku you need:
 
 You don't need any additional dependencies.
 All dependecies related to database management, server management, security management and so on, will be automatically injected by Maven using the pom.xml file located in the root folder of the project.
+
 ## Installation
 
 Clone the project
@@ -335,7 +383,7 @@ To deploy this project run
 
 ## Usage
 
-You cand use the a demo version of the app, using SwaggerUI and following this link:
+You cand use demo version of the app, using SwaggerUI and following this link:
 
 ```bash
 https://safe-wildwood-25661.herokuapp.com/swagger-ui/
@@ -365,7 +413,6 @@ In the future, application can be extended with following:
 
 
 ## Badges
-
 
 ![Maintained](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
 ![GIT](https://img.shields.io/badge/GIT-E44C30?style=for-the-badge&logo=git&logoColor=white)
