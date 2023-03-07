@@ -60,7 +60,7 @@ public class MailService {
     public MimeMessageHelper prepareMail(String to) throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setFrom("raluca.deftu@yahoo.com");
+        helper.setFrom("deftu.raluca@yahoo.com");
         helper.setTo(to);
         return helper;
     }
