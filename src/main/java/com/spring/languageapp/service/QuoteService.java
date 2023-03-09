@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,14 +50,15 @@ public class QuoteService {
         quote.setUser(foundUser);
         quote.setApproved(false);
 
-        Role adminRole = roleRepository.findByRoleType(RoleType.ROLE_ADMIN);
+        //Role adminRole = roleRepository.findByRoleType(RoleType.ROLE_ADMIN);
+        Optional<Role> roleOptional = roleRepository.findByRoleType(RoleType.ROLE_ADMIN);
 
         List<User> users = userRepository.findAll();
         users.stream()
-                .filter(user -> user.getRoleList().contains(adminRole))
+                .filter(user -> user.getRoleList().contains(roleOptional.get()))
                 .forEach(admin -> {
             try {
-                mailService.sendApproveForQuote_Admin(admin.getEmail(), quote);
+                mailService.sendApprovementForQuoteToAdmin(admin.getEmail(), quote);
             } catch (MessagingException e) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "failed to send e-mails");
             }

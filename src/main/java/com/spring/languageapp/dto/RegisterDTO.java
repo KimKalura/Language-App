@@ -1,9 +1,11 @@
 package com.spring.languageapp.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class RegisterDTO {
@@ -30,10 +32,12 @@ public class RegisterDTO {
     private String practicedLanguage;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
+
+    private String role;
 
 
-    public RegisterDTO(String username, String password, String email, String country, String nationality, String nativeLanguage, String practicedLanguage, LocalDateTime dateOfBirth) {
+    public RegisterDTO(String username, String password, String email, String country, String nationality, String nativeLanguage, String practicedLanguage, LocalDate dateOfBirth, String role) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -42,6 +46,7 @@ public class RegisterDTO {
         this.nativeLanguage = nativeLanguage;
         this.practicedLanguage = practicedLanguage;
         this.dateOfBirth = dateOfBirth;
+        this.role = role;
     }
 
     public String getEmail() {
@@ -100,11 +105,19 @@ public class RegisterDTO {
         this.practicedLanguage = practicedLanguage;
     }
 
-    public LocalDateTime getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(LocalDateTime dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

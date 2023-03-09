@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class User {
     private String practicedLanguage;
 
     @Column
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -81,7 +80,7 @@ public class User {
 
     public User() {}
 
-    public User(Long id, String username, String email, String password, String country, String nationality, String nativeLanguage, String practicedLanguage, LocalDateTime dateOfBirth, List<LiteraryWorkPost> literaryWorkPostList, List<PhotoPost> photoList, List<FavoritePhotoList> favoritePhotoList, List<FavoriteUserLiteraryWorkPost> favoriteUserLiteraryWorkPost, List<Quote> quoteList, List<Comment> commentList, List<Role> roleList) {
+    public User(Long id, String username, String email, String password, String country, String nationality, String nativeLanguage, String practicedLanguage, LocalDate dateOfBirth, List<LiteraryWorkPost> literaryWorkPostList, List<PhotoPost> photoList, List<FavoritePhotoList> favoritePhotoList, List<FavoriteUserLiteraryWorkPost> favoriteUserLiteraryWorkPost, List<Quote> quoteList, List<Comment> commentList, List<Role> roleList) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -164,11 +163,11 @@ public class User {
         this.practicedLanguage = practicedLanguage;
     }
 
-    public LocalDateTime getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(LocalDateTime dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

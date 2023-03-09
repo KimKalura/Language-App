@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -47,9 +48,31 @@ public class UserService {
         user.setPracticedLanguage(newUser.getPracticedLanguage());
         user.setDateOfBirth(newUser.getDateOfBirth());
 
-        Role foundRole = roleRepository.findByRoleType(RoleType.ROLE_CLIENT);
-        user.getRoleList().add(foundRole);
-        foundRole.getUserList().add(user);
+        String roleString = newUser.getRole();
+        Role userRole = new Role();
+        if ("ADMIN".equals(roleString)) {
+            Optional<Role> roleOptional = roleRepository.findByRoleType(RoleType.ROLE_ADMIN);
+            if (roleOptional.isEmpty()) {
+                userRole.setRoleType(RoleType.ROLE_ADMIN);
+                userRole = roleRepository.save(userRole);
+            } else {
+                userRole = roleOptional.get();
+            }
+        } else if ("CLIENT".equals(roleString)) {
+            Optional<Role> roleOptional = roleRepository.findByRoleType(RoleType.ROLE_CLIENT);
+            if (roleOptional.isEmpty()) {
+                userRole.setRoleType(RoleType.ROLE_CLIENT);
+                userRole =  roleRepository.save(userRole);
+            } else {
+                userRole = roleOptional.get();
+            }
+        }
+        else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "you cannot register with this role");
+        }
+        Role role = roleRepository.findByRoleType(userRole.getRoleType()).get();
+        user.getRoleList().add(role);
+        role.getUserList().add(user);
         return userRepository.save(user);
     }
 
@@ -59,7 +82,7 @@ public class UserService {
         return foundUser;
     }
 
-    public User findUser(Long id){
+    public User findUser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "the user was not found"));
     }
 }
