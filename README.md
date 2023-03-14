@@ -402,6 +402,7 @@ From now on, you can use all other available endpoints, as per swagger documenta
 ## Roadmap
 
 In the future, application can be extended with following:
+- dictionary API
 
 - photo features
 
@@ -409,7 +410,7 @@ In the future, application can be extended with following:
 
 - chat
 
-- recording tool 
+- recording voice tool 
 
 
 ## Badges

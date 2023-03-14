@@ -7,11 +7,11 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "photoData")
+@Table(name = "photoPost")
 public class PhotoPost extends  Post{
 
-    private String name;
-    private String type;
+//    private String name;
+//    private String type;
     @Column
     private String description;
 
@@ -41,10 +41,8 @@ public class PhotoPost extends  Post{
     public PhotoPost() {
     }
 
-    public PhotoPost(Long id, String name, String type, String description, byte[] photoData, Integer numberOfLikes, Integer numberOfDislikes, User user, List<Comment> commentList, List<FavoritePhotoList> favoritePhotoList) {
+    public PhotoPost(Long id, String description, byte[] photoData, Integer numberOfLikes, Integer numberOfDislikes, User user, List<Comment> commentList, List<FavoritePhotoList> favoritePhotoList) {
        super(id);
-        this.name = name;
-        this.type = type;
         this.description = description;
         this.photoData = photoData;
         this.numberOfLikes = numberOfLikes;
@@ -54,23 +52,6 @@ public class PhotoPost extends  Post{
         this.favoritePhotoList = favoritePhotoList;
     }
 
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getDescription() {
         return description;
