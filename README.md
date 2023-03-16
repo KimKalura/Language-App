@@ -402,15 +402,13 @@ From now on, you can use all other available endpoints, as per swagger documenta
 ## Roadmap
 
 In the future, application can be extended with following:
-- dictionary API
+- dictionary API - it will include an API with definitions, examples, audio pronunciation, and adding to the user's list of favorite words
 
-- photo features
+- features for picture + API for the location where a picture was taken
 
-- API location for a photo where it was taken
+- chat room - users can practice their language skills with other learners or native speakers
 
-- chat
-
-- recording voice tool 
+- recording voice tool -a user who is learning a language to record himself while reading a text in the target language, so that he can then receive feedback on the pronunciation from another user who knows that language
 
 
 ## Badges
