@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@Api(tags = "Users authentification")
+@Api(tags = "User authentification")
 public class AuthController {
 
     @Autowired
