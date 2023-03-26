@@ -13,10 +13,10 @@ public class Quote extends Post{
     private String text;
 
     @Column
-    private Integer numberOfLikes;
+    private Integer numberOfLikes = 0;
 
     @Column
-    private Integer numberOfDislikes;
+    private Integer numberOfDislikes = 0;
 
     @Column
     private Boolean isApproved;

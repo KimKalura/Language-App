@@ -5,6 +5,7 @@ import com.spring.languageapp.dto.LiteraryWorkResponseDTO;
 import com.spring.languageapp.dto.TranslationRomanizationRequestDTO;
 import com.spring.languageapp.model.*;
 import com.spring.languageapp.repository.*;
+import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -161,9 +162,15 @@ public class LiteraryWorkService {
 
     public LiteraryWorkPost addLike(Long literaryWorkId) {
         LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(literaryWorkId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
-        // User likeUser = userService.findLoggedInUser();
-        // User postCreator = foundLiteraryWork.getUser();
+        //User likeUser = userService.findLoggedInUser();
+        //User postCreator = foundLiteraryWork.getUser();
         foundLiteraryWork.setNumberOfLikes(foundLiteraryWork.getNumberOfLikes() + 1);
+        return literaryWorkRepository.save(foundLiteraryWork);
+    }
+
+    public LiteraryWorkPost addDislike(Long literaryWorkId) {
+        LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(literaryWorkId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
+        foundLiteraryWork.setNumberOfDislikes(foundLiteraryWork.getNumberOfDislikes() - 1);
         return literaryWorkRepository.save(foundLiteraryWork);
     }
 

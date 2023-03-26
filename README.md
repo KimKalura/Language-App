@@ -28,7 +28,7 @@ As a user, I can:
 - view all poetry
 - view a prose by language
 - delete a literary work
-- add like
+- add like/dislike
 - add literary work to favorite list
 - view all favorite literary work by user
 - delete from favorite list
@@ -273,8 +273,8 @@ Request body example:
 
 ```json
 {
-  "password": "string",
-  "username": "string"
+  "username":"string",
+  "password":"string"
 }
 ```  
 
@@ -408,7 +408,7 @@ In the future, application can be extended with following:
 
 - chat room - users can practice their language skills with other learners or native speakers
 
-- recording voice tool -a user who is learning a language to record himself while reading a text in the target language, so that he can then receive feedback on the pronunciation from another user who knows that language
+- recording voice tool - an user who is learning a language to record himself while reading a text in the target language, so that he can then receive feedback on the pronunciation from another user who knows that language
 
 
 ## Badges

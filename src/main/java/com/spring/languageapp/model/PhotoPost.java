@@ -19,10 +19,10 @@ public class PhotoPost extends  Post{
     private byte[] photoData;
 
     @Column
-    private Integer numberOfLikes;
+    private Integer numberOfLikes = 0;
 
     @Column
-    private Integer numberOfDislikes;
+    private Integer numberOfDislikes = 0;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

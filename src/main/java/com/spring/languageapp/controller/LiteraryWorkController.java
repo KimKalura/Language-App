@@ -57,10 +57,14 @@ public class LiteraryWorkController {
     }
 
     @PostMapping("/like/{literaryWorkId}")
-    public LiteraryWorkPost addLike(@PathVariable Long literaryWorkId){
+    public LiteraryWorkPost addLike(@PathVariable Long literaryWorkId) throws MessagingException {
          return literaryWorkService.addLike(literaryWorkId);
     }
 
+    @PostMapping("/dislike/{literaryWorkId}")
+    public LiteraryWorkPost addDislike(@PathVariable Long literaryWorkId){
+        return literaryWorkService.addDislike(literaryWorkId);
+    }
 }
 
 

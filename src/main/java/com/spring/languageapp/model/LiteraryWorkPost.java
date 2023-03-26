@@ -2,6 +2,7 @@ package com.spring.languageapp.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -9,9 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class LiteraryWorkPost extends Post{
+public class LiteraryWorkPost extends Post {
 
     @Column
+    //@ApiModelProperty(notes = "literary work type", example = "PROSE/POETRY", required = true)
     private LiteraryWorkType literaryWorkType;
 
     @Column
@@ -26,10 +28,10 @@ public class LiteraryWorkPost extends Post{
     private String text;
 
     @Column
-    private Integer numberOfLikes;
+    private Integer numberOfLikes = 0;
 
     @Column
-    private Integer numberOfDislikes;
+    private Integer numberOfDislikes = 0;
 
 
     @OneToMany(mappedBy = "literaryWorkPost", cascade = CascadeType.ALL)
@@ -50,8 +52,8 @@ public class LiteraryWorkPost extends Post{
     private List<FavoriteUserLiteraryWorkPost> favoriteUserLiteraryWorkPost;
 
 
-
-    public LiteraryWorkPost(){}
+    public LiteraryWorkPost() {
+    }
 
     public LiteraryWorkPost(Long id, LiteraryWorkType literaryWorkType, LanguageType originalLanguage, LocalDateTime createdDate, String title, String text, Integer numberOfLikes, Integer numberOfDislikes, List<TranslationRomanization> translationRomanizationList, User user, List<Comment> commentList, List<FavoriteUserLiteraryWorkPost> favoriteUserLiteraryWorkPost) {
         super(id);

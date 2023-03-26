@@ -1,6 +1,7 @@
 package com.spring.languageapp.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ public class TranslationRomanization {
     private String romanizationText;
 
     @Column
+    @ApiModelProperty(hidden = true)
     private LocalDateTime createdDate;
 
     @ManyToOne
