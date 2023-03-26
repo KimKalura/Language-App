@@ -44,8 +44,6 @@ public class Quote extends Post{
         this.commentList = commentList;
     }
 
-
-
     public String getText() {
         return text;
     }
