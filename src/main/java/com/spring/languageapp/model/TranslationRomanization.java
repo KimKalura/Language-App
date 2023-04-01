@@ -30,7 +30,7 @@ public class TranslationRomanization {
     private String romanizationText;
 
     @Column
-    @ApiModelProperty(hidden = true)
+    //@ApiModelProperty(hidden = true)
     private LocalDateTime createdDate;
 
     @ManyToOne

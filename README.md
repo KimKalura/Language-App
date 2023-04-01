@@ -68,7 +68,6 @@ You can view the demo here:
 | `body` | `json` | **Required**. The properties of literary work to be added  |
 
 Request body example:
-
 ```json
  {
     "literaryWorkType":"enum",

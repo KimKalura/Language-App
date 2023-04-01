@@ -27,10 +27,10 @@ public class LiteraryWorkPost extends Post {
     @Column
     private String text;
 
-    @Column
+    @Column//(columnDefinition = "integer default 0")
     private Integer numberOfLikes = 0;
 
-    @Column
+    @Column//(columnDefinition = "integer default 0")
     private Integer numberOfDislikes = 0;
 
 

@@ -18,10 +18,10 @@ public class PhotoPost extends  Post{
     @Column(name = "photoData", length = 1000)
     private byte[] photoData;
 
-    @Column
+    @Column//(columnDefinition = "integer default 0")
     private Integer numberOfLikes = 0;
 
-    @Column
+    @Column//(columnDefinition = "integer default 0")
     private Integer numberOfDislikes = 0;
 
     @ManyToOne

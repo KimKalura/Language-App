@@ -161,7 +161,7 @@ public class LiteraryWorkService {
     }
 
     public LiteraryWorkPost addLike(Long literaryWorkId) {
-        LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(literaryWorkId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
+        LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(literaryWorkId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
         //User likeUser = userService.findLoggedInUser();
         //User postCreator = foundLiteraryWork.getUser();
         foundLiteraryWork.setNumberOfLikes(foundLiteraryWork.getNumberOfLikes() + 1);
@@ -169,7 +169,7 @@ public class LiteraryWorkService {
     }
 
     public LiteraryWorkPost addDislike(Long literaryWorkId) {
-        LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(literaryWorkId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work not found"));
+        LiteraryWorkPost foundLiteraryWork = literaryWorkRepository.findById(literaryWorkId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "literary work was not found"));
         foundLiteraryWork.setNumberOfDislikes(foundLiteraryWork.getNumberOfDislikes() - 1);
         return literaryWorkRepository.save(foundLiteraryWork);
     }
