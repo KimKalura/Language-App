@@ -24,9 +24,11 @@ public class TranslationRomanization {
     private String translatedTitle;
 
     @Column
+    @ApiModelProperty(value = "translated text", dataType = "text")
     private String translatedText;
 
     @Column
+    @ApiModelProperty(value = "romanization text", dataType = "text")
     private String romanizationText;
 
     @Column
