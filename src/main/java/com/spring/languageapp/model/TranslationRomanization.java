@@ -23,12 +23,14 @@ public class TranslationRomanization {
     @Column
     private String translatedTitle;
 
-    @Column
-    @ApiModelProperty(value = "translated text", dataType = "text")
+    @Lob
+    @Column(length=100000)
+    @ApiModelProperty(value = "translated text", example = "long text", required = false)
     private String translatedText;
 
-    @Column
-    @ApiModelProperty(value = "romanization text", dataType = "text")
+    @Lob
+    @Column(length=100000)
+    @ApiModelProperty(value = "romanization text", example = "long text", required = false)
     private String romanizationText;
 
     @Column
