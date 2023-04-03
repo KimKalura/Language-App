@@ -44,7 +44,7 @@ public class LiteraryWorkService {
 
         if (literaryWorkRequestDTO.getLiteraryWorkType().equals(LiteraryWorkType.PROSE) && literaryWorkRequestDTO.getText().equals(maxWordsForProse(literaryWorkRequestDTO.getText(), 1000))) {
             literaryWorkRepository.save(literaryWorkPost);
-        } else if (literaryWorkRequestDTO.getLiteraryWorkType().equals(LiteraryWorkType.POETRY) && literaryWorkRequestDTO.getText().equals(maxWordsForPoem(literaryWorkRequestDTO.getText(), 250))) {
+        } else if (literaryWorkRequestDTO.getLiteraryWorkType().equals(LiteraryWorkType.POETRY) && literaryWorkRequestDTO.getText().equals(maxWordsForPoem(literaryWorkRequestDTO.getText(), 500))) {
             literaryWorkRepository.save(literaryWorkPost);
         } else {
             throw new ResponseStatusException((HttpStatus.NO_CONTENT), "You reached the maxim words for your literary work or you did not chose the type of your literary work!");
