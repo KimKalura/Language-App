@@ -52,7 +52,9 @@ As an admin, I can:
 
 You can view the demo here:
 
-(insert link to video demo)
+````bash
+https://www.youtube.com/watch?v=ECVbXzuMRwA&ab_channel=KimKalura
+````
 
 
 ## API Reference
