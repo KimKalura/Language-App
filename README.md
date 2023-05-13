@@ -2,7 +2,7 @@
 
 And here you can find the documentation of the LanguageApp project
 ## 🚀 About Me
-💻(Aspiring) back-end software developer | 👨‍💻Helping companies to build great back-ends | Java, Spring Boot | Passionate about solving problems using technology | 💼 Actively looking for a job |
+💻Back-end software developer | 👨‍💻Helping companies to build great back-ends | Java, Spring Boot | Passionate about solving problems using technology | 💼 Actively looking for a job |
 
 
 ## 🛠 Skills
