@@ -39,4 +39,9 @@ public class QuoteController {
     public List<Quote> getAllUnapprovedQuotes() {
         return quoteService.getAllUnapprovedQuotes();
     }
+
+    @DeleteMapping("/delete/{quoteId}")
+    public void deleteQuote(@PathVariable Long quoteId) {
+        quoteService.deleteQuote(quoteId);
+    }
 }

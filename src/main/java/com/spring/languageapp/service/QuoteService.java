@@ -85,8 +85,12 @@ public class QuoteService {
                 .collect(Collectors.toList());
     }
 
-
     public Quote findQuote(Long id) {
         return quoteRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "quote was not found"));
+    }
+
+    public void deleteQuote(Long quoteId){
+        Quote foundQuote = quoteRepository.findById(quoteId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "quote was not found"));
+        quoteRepository.delete(foundQuote);
     }
 }
