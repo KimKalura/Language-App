@@ -93,12 +93,12 @@ public class DictionaryService {
 
 
     //pentru response->body(->JSON)
-    public String getTranslation(String languageType, String word) {
+    /*public String getTranslation(String languageType, String word) {
         RestTemplate restTemplate = new RestTemplate();
         URI url = new UriTemplate(WORD_URL).expand(apiKey, languageType, word);
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         return "";
-    }
+    }*/
 
     //*Accepted languages:
     // ["be-be","be-ru",

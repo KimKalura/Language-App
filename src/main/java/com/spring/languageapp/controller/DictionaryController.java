@@ -33,8 +33,8 @@ public class DictionaryController {
         }
     }
 
-    @GetMapping
+    /*@GetMapping
     public String getTranslation(@RequestParam (value="lang", required = false, defaultValue = "en-ru") String languageType,  @RequestParam (value="text", required = false, defaultValue = "code") String word) throws IOException {
         return dictionaryService.getTranslation(languageType, word);
-    }
+    }*/
 }
