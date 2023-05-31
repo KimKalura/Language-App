@@ -81,12 +81,37 @@ public class DictionaryService {
     }
 
     public TranslatedWordDTO convertFromJsonToTranslatedWord(JsonNode node) {
-        String text = node.path("text").asText();
+        /*String text = node.path("text").asText();
         String partOfSpeech = node.path("pos").asText();
         String transliteration = node.path("ts").asText();
         String textTranslation = node.path("tr").get(0).path("text").asText();
         String textSynonymous = node.path("tr").get(0).path("syn").get(0).path("text").asText();
-        String textMeaning = node.path("tr").get(0).path("mean").get(0).path("text").asText();
+        String textMeaning = node.path("tr").get(0).path("mean").get(0).path("text").asText();*/
+
+        String text = node.path("text").asText();
+        String partOfSpeech = node.path("pos").asText();
+        String transliteration = node.path("ts").asText();
+        String textTranslation = "";
+        String textSynonymous = "";
+        String textMeaning = "";
+
+        JsonNode trNode = node.path("tr");
+        if (trNode.isArray() && trNode.size() > 0) {
+            JsonNode firstTranslation = trNode.get(0);
+            textTranslation = firstTranslation.path("text").asText();
+
+            JsonNode synNode = firstTranslation.path("syn");
+            if (synNode.isArray() && synNode.size() > 0) {
+                JsonNode firstSynonym = synNode.get(0);
+                textSynonymous = firstSynonym.path("text").asText();
+            }
+
+            JsonNode meanNode = firstTranslation.path("mean");
+            if (meanNode.isArray() && meanNode.size() > 0) {
+                JsonNode firstMeaning = meanNode.get(0);
+                textMeaning = firstMeaning.path("text").asText();
+            }
+        }
         return new TranslatedWordDTO(text, partOfSpeech, transliteration, textTranslation, textSynonymous, textMeaning);
     }
 
